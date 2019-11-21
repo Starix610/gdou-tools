@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>教务系统成绩快捷查询</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+<div><h4 id="title" style="text-align: center">教务系统成绩快捷查询</h4></div>
+<div style="text-align: center;margin-bottom: 20px">
+    <form id="selectForm">
+        学年:
+        <select name="year" id="year">
+            <!--<option value="2018-2019">2018-2019</option>-->
+            <!--<option value="2017-2018">2017-2018</option>-->
+        </select>
+        学期:
+        <select name="semester" id="semester">
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select>
+    </form>
+</div>
+<div>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>课程名</th>
+            <th>学分</th>
+            <th>绩点</th>
+            <th>成绩</th>
+        </tr>
+        </thead>
+        <tbody id="tableList">
+        <!--<tr>-->
+            <!--<td>1111</td>-->
+            <!--<td>asd</td>-->
+            <!--<td>dsa</td>-->
+            <!--<td>asd</td>-->
+        <!--</tr>-->
+        </tbody>
+    </table>
+    <div id="info" style="display: none;text-align: center;color: red">没有数据</div>
+</div>
+</body>
+<script type="text/javascript">
+    $(function () {
+        get_yearOptionsList();
+        console.log("列表获取完成1")
+        get_score();
+    })
+
+    $("#year").change(function () {
+        get_score();
+    })
+
+    $("#semester").change(function () {
+        get_score();
+    })
+
+    function get_score() {
+        $("#title").text($("#year").val()+"学年第"+$("#semester").val()+"学期成绩");
+        var params = $("#selectForm").serialize();
+        $.ajax({
+            type: "GET",
+            contentType: "application/x-www-form-urlencoded",
+            url: "http://139.196.102.109:9800/queryScore",
+            data: params,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#tableList").empty();
+                    if (data.data.length>0) {
+                        var html = "";
+                        for (var i = 0;i<data.data.length;i++){
+                            html += "<tr>";
+                            html += "<td>"+data.data[i].courseName+"</td>";
+                            html += "<td>"+data.data[i].credit+"</td>";
+                            html += "<td>"+data.data[i].gradePoint+"</td>";
+                            html += "<td>"+data.data[i].score+"</td>";
+                            html += "</tr>";
+                        }
+                        $("#tableList").append(html);
+                    }else {
+                        $("#info").show();
+                        // alert("没有数据");
+                    }
+                } else {
+                    alert(data.message);
+                }
+            }
+
+        });
+    }
+
+    function get_yearOptionsList() {
+        $.ajax({
+            type: "GET",
+            contentType: "application/x-www-form-urlencoded",
+            url: "http://139.196.102.109:9800/getYearOptionsList",
+            dataType: "json",
+            //改同步方式，先获取到年份列表才去获取成绩
+            async: false,
+            success: function (data) {
+                if (data.code == 200) {
+                    for (var i = 0;i<data.data.length;i++){
+                        $("#year").append("<option value=" + data.data[i] + ">" + data.data[i] + "</option>");
+                    }
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
+    }
+
+
+</script>
+</html>
