@@ -42,8 +42,8 @@ public class SpiderServiceImpl implements SpiderService {
 
     private static final String BASE_URL = "http://210.38.137.126:8016";
 
-    private static final String PYTHON_PATH = "F:\\IdeaProjects\\project\\gdou-score-query\\src\\main\\resources\\python\\code_ocr.py";
-    // private static final String PYTHON_PATH = "/opt/server/gdou_score_query/pyhton/code_ocr.py";
+    // private static final String PYTHON_PATH = "F:\\IdeaProjects\\project\\gdou-score-query\\src\\main\\resources\\python\\code_ocr.py";
+    private static final String PYTHON_PATH = "/opt/server/gdou_score_query/pyhton/code_ocr.py";
 
     @Override
     public LoginResult login(String xh, String password) throws Exception {
