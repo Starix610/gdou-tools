@@ -186,6 +186,7 @@
     </div>
 </div>
 <script src="js/jquery-2.1.1.min.js"></script>
+<script src="js/app.js"></script>
 <script type="text/javascript">
     function do_login() {
         $("#loading").show();
@@ -194,12 +195,12 @@
         $.ajax({
             type: "POST",
             contentType: "application/x-www-form-urlencoded",
-            url: "http://139.196.102.109:9800/login",
+            url: BASE_URL + "/login",
             data: params,
             dataType: "json",
             success: function(data){
                 if(data.code == 200){
-                    window.location.href="http://139.196.102.109:9800/score-list.html"
+                    window.location.href = BASE_URL + "/score-list.html"
                 }else {
                     // alert(data.message);
                     $("#info").text(data.message);

@@ -59,6 +59,7 @@
     <div id="info" style="display: none;text-align: center;color: red">没有数据</div>
 </div>
 </body>
+<script src="js/app.js"></script>
 <script type="text/javascript">
     $(function () {
         get_yearOptionsList();
@@ -80,7 +81,7 @@
         $.ajax({
             type: "GET",
             contentType: "application/x-www-form-urlencoded",
-            url: "http://139.196.102.109:9800/queryScore",
+            url: BASE_URL+"/queryScore",
             data: params,
             dataType: "json",
             success: function (data) {
@@ -113,7 +114,7 @@
         $.ajax({
             type: "GET",
             contentType: "application/x-www-form-urlencoded",
-            url: "http://139.196.102.109:9800/getYearOptionsList",
+            url: BASE_URL + "/getYearOptionsList",
             dataType: "json",
             //改同步方式，先获取到年份列表才去获取成绩
             async: false,
