@@ -42,8 +42,8 @@ public class SpiderServiceImpl implements SpiderService {
 
     private static final String BASE_URL = "http://210.38.137.126:8016";
 
-    // private static final String PYTHON_PATH = "F:\\IdeaProjects\\project\\gdou-score-query\\src\\main\\resources\\python\\code_ocr.py";
-    private static final String PYTHON_PATH = "/opt/server/gdou_score_query/pyhton/code_ocr.py";
+    private static final String PYTHON_PATH = "F:\\IdeaProjects\\project\\gdou-score-query\\src\\main\\resources\\python\\code_ocr.py";
+    // private static final String PYTHON_PATH = "/opt/server/gdou_score_query/pyhton/code_ocr.py";
 
     @Override
     public LoginResult login(String xh, String password) throws Exception {
@@ -198,7 +198,7 @@ public class SpiderServiceImpl implements SpiderService {
     }
 
     @Override
-    public List<String> getYearOptionsList(LoginResult loginResult) throws Exception {
+    public List<String> getSocreYearOptionsList(LoginResult loginResult) throws Exception {
 
         Document document = Jsoup.parse(loginResult.getHomePageHtml());
 
@@ -215,6 +215,32 @@ public class SpiderServiceImpl implements SpiderService {
 
         //成绩查询年份下拉列表数据
         Elements yearOptions = document.getElementById("ddlXN").getElementsByTag("option");
+        List<String> yearList = new ArrayList<>();
+        for (int i = 1; i < yearOptions.size(); i++) {
+            yearList.add(yearOptions.get(i).text());
+        }
+
+        return yearList;
+    }
+
+    @Override
+    public List<String> getExamYearOptionsList(LoginResult loginResult) throws Exception {
+
+        Document document = Jsoup.parse(loginResult.getHomePageHtml());
+
+        //查成绩页面URL
+        String scoreURL = document.getElementsByAttributeValue("onclick", "GetMc('学生考试查询');").get(0).attr("href");
+
+        HttpPost scorePagePost = new HttpPost(BASE_URL + "/" + scoreURL);
+        BasicHeader referer = new BasicHeader("Referer", loginResult.getRefererURL());
+        scorePagePost.setHeader(loginResult.getCookie());
+        scorePagePost.setHeader(referer);
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        HttpResponse resp = httpClient.execute(scorePagePost);
+        document = Jsoup.parse(EntityUtils.toString(resp.getEntity(), Consts.UTF_8));
+
+        //考试查询年份下拉列表数据
+        Elements yearOptions = document.getElementById("xnd").getElementsByTag("option");
         List<String> yearList = new ArrayList<>();
         for (int i = 1; i < yearOptions.size(); i++) {
             yearList.add(yearOptions.get(i).text());

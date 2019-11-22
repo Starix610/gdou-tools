@@ -111,11 +111,11 @@
         }
 
         body {
-            background: #76b852; /* fallback for old browsers */
-            background: -webkit-linear-gradient(right, #76b852, #8DC26F);
-            background: -moz-linear-gradient(right, #76b852, #8DC26F);
-            background: -o-linear-gradient(right, #76b852, #8DC26F);
-            background: linear-gradient(to left, #76b852, #8DC26F);
+            background: #74aeb8; /* fallback for old browsers */
+            background: -webkit-linear-gradient(right, #76b8b2, #5cbdc2);
+            background: -moz-linear-gradient(right, #76b8b2, #5cbdc2);
+            background: -o-linear-gradient(right, #76b8b2, #5cbdc2);
+            background: linear-gradient(to left, #76b8b2, #5cbdc2);
             font-family: "Roboto", sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -187,8 +187,8 @@
 <script src="js/app.js"></script>
 <script type="text/javascript">
     function do_login() {
-        $("#loading").show();
         $("#info").hide();
+        $("#loading").show();
         var params = $("#loginForm").serialize();
         $.ajax({
             type: "POST",
@@ -222,6 +222,16 @@
     }
     $(function () {
         $("#login").click(function () {
+            if ($("#xh").val() == '' || $("#password").val() == ''){
+                $("#info").text("信息填写不完整");
+                $("#info").show();
+                //窗口振动
+                $("#login_form").removeClass('shake_effect');
+                setTimeout(function () {
+                    $("#login_form").addClass('shake_effect')
+                }, 1);
+                return false;
+            }
             do_login();
             return false;
         })

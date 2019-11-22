@@ -57,14 +57,26 @@ public class MainController {
     }
 
 
-    //获得年份下拉列表数据
-    @GetMapping("/getYearOptionsList")
-    public CommonResult doGtYearOptionsList(HttpSession httpSession) throws Exception {
+    //获得查成绩页面年份下拉列表数据
+    @GetMapping("/getScoreYearOptionsList")
+    public CommonResult doGetScoreYearOptionsList(HttpSession httpSession) throws Exception {
         LoginResult loginResult = (LoginResult) httpSession.getAttribute("studentLoginInfo");
         if (loginResult == null){
             return CommonResult.fail(ResultCode.UNAUTHORIZED.getCode(),"你还没有登录或者登录信息已经过期");
         }
-        List<String> yearOptionsList = spiderService.getYearOptionsList(loginResult);
+        List<String> yearOptionsList = spiderService.getExamYearOptionsList(loginResult);
+        return CommonResult.success(yearOptionsList);
+    }
+
+
+    //获得查考试页面年份下拉列表数据
+    @GetMapping("/getExamYearOptionsList")
+    public CommonResult doGetExamYearOptionsList(HttpSession httpSession) throws Exception {
+        LoginResult loginResult = (LoginResult) httpSession.getAttribute("studentLoginInfo");
+        if (loginResult == null){
+            return CommonResult.fail(ResultCode.UNAUTHORIZED.getCode(),"你还没有登录或者登录信息已经过期");
+        }
+        List<String> yearOptionsList = spiderService.getExamYearOptionsList(loginResult);
         return CommonResult.success(yearOptionsList);
     }
 

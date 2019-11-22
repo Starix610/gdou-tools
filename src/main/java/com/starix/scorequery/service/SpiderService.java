@@ -33,9 +33,17 @@ public interface SpiderService {
 
 
     /**
-     * 获得年份下拉列表数据
+     * 获得查成绩页面年份下拉列表数据
      * @param loginResult
      * @return
      */
-    List<String> getYearOptionsList(LoginResult loginResult) throws IOException, Exception;
+    List<String> getSocreYearOptionsList(LoginResult loginResult) throws Exception;
+
+
+    /**
+     * 获得查考试页面年份下拉列表数据
+     * @param loginResult
+     * @return
+     */
+    List<String> getExamYearOptionsList(LoginResult loginResult) throws Exception;
 }
