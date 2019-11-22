@@ -64,7 +64,7 @@ public class MainController {
         if (loginResult == null){
             return CommonResult.fail(ResultCode.UNAUTHORIZED.getCode(),"你还没有登录或者登录信息已经过期");
         }
-        List<String> yearOptionsList = spiderService.getExamYearOptionsList(loginResult);
+        List<String> yearOptionsList = spiderService.getSocreYearOptionsList(loginResult);
         return CommonResult.success(yearOptionsList);
     }
 
