@@ -21,7 +21,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
@@ -29,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -252,7 +250,6 @@ public class SpiderServiceImpl implements SpiderService {
         response = httpClient.execute(examPagePost);
 
         document = Jsoup.parse(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
-        System.out.println(document);
 
 
         //考试列表行
