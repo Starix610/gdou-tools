@@ -62,21 +62,21 @@
 <script src="js/app.js"></script>
 <script type="text/javascript">
     $(function () {
-        get_yearOptionsList();
-        console.log("列表获取完成1")
-        get_score();
+        getScoreYearOptionsList();
+        getScore();
     })
 
     $("#year").change(function () {
-        get_score();
+        getScore();
     })
 
     $("#semester").change(function () {
-        get_score();
+        getScore();
     })
 
-    function get_score() {
+    function getScore() {
         $("#title").text($("#year").val()+"学年第"+$("#semester").val()+"学期成绩");
+        $("#info").hide();
         var params = $("#selectForm").serialize();
         $.ajax({
             type: "GET",
@@ -113,7 +113,7 @@
         });
     }
 
-    function get_yearOptionsList() {
+    function getScoreYearOptionsList() {
         $.ajax({
             type: "GET",
             contentType: "application/x-www-form-urlencoded",

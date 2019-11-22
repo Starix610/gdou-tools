@@ -4,6 +4,7 @@ import com.starix.scorequery.exception.CustomException;
 import com.starix.scorequery.pojo.LoginResult;
 import com.starix.scorequery.response.CommonResult;
 import com.starix.scorequery.service.SpiderService;
+import com.starix.scorequery.vo.ExamVO;
 import com.starix.scorequery.vo.ScoreVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Consts;
@@ -20,6 +21,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
@@ -174,7 +176,6 @@ public class SpiderServiceImpl implements SpiderService {
 
         //成绩列表行
         Elements trs = document.getElementById("Datagrid1").getElementsByTag("tr");
-        HashMap<String, String> map = new HashMap<>();
         List<ScoreVO> scoreList = new ArrayList<>();
         ScoreVO scoreVO = null;
         for (int i = 1; i < trs.size(); i++) {
@@ -195,6 +196,87 @@ public class SpiderServiceImpl implements SpiderService {
             scoreList.add(scoreVO);
         }
         return scoreList;
+    }
+
+    @Override
+    public List<ExamVO> getExam(LoginResult loginResult, String year, String semester) throws Exception {
+        Document document = Jsoup.parse(loginResult.getHomePageHtml());
+
+        //考试查询页面URL
+        String examURL = document.getElementsByAttributeValue("onclick", "GetMc('学生考试查询');").get(0).attr("href");
+
+
+        // 进入考试查询页面。这里需要动态获取__VIEWSTATE。
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        HttpGet examPageGet = new HttpGet(BASE_URL + "/" + examURL);
+        BasicHeader referer = new BasicHeader("Referer", loginResult.getRefererURL());
+        examPageGet.setHeader(loginResult.getCookie());
+        examPageGet.setHeader(referer);
+        HttpResponse response = httpClient.execute(examPageGet);
+        document = Jsoup.parse(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
+        //默认viewState，对应考试查询页面的默认最新年份的viewState
+        String viewState = document.getElementById("form1").getElementsByAttributeValue("name", "__VIEWSTATE").get(0).val();
+
+
+        // 获取新的__VIEWSTATE
+        // 先将xnd参数(学年)设置为空再次发起请求（目的是切换学年下拉列表状态，获得新的__VIEWSTATE），
+        // 因为教务系统这个页面默认是显示最新学年的数据，下次如果请求的还是当前默认学年的数据而且带着相同的__VIEWSTATE
+        // 的话会得不到数据。因此这样能够获取到下一次正常请求需要使用的__VIEWSTATE
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("__EVENTTARGET", "xnd"));
+        params.add(new BasicNameValuePair("__EVENTARGUMENT", ""));
+        params.add(new BasicNameValuePair("__VIEWSTATE", viewState));
+        params.add(new BasicNameValuePair("xnd", ""));
+        params.add(new BasicNameValuePair("xqd", semester));
+        HttpPost examPagePost = new HttpPost(BASE_URL + "/" + examURL);
+        examPagePost.setEntity(new UrlEncodedFormEntity(params, Consts.UTF_8));
+        examPagePost.setHeader(referer);
+        examPagePost.setHeader(loginResult.getCookie());
+        response = httpClient.execute(examPagePost);
+        document = Jsoup.parse(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
+        //对应空年份状态的__VIEWSTATE，带着这个__VIEWSTATE下次即可请求任意年份的数据
+        viewState = document.getElementById("form1").getElementsByAttributeValue("name", "__VIEWSTATE").get(0).val();
+
+
+        params = new ArrayList<>();
+        params.add(new BasicNameValuePair("__EVENTTARGET", "xnd"));
+        params.add(new BasicNameValuePair("__EVENTARGUMENT", ""));
+        //__VIEWSTATE可根据需要自己获取
+        params.add(new BasicNameValuePair("__VIEWSTATE", viewState));
+        params.add(new BasicNameValuePair("xnd", year));
+        params.add(new BasicNameValuePair("xqd", semester));
+        examPagePost = new HttpPost(BASE_URL + "/" + examURL);
+        examPagePost.setEntity(new UrlEncodedFormEntity(params, Consts.UTF_8));
+        examPagePost.setHeader(referer);
+        examPagePost.setHeader(loginResult.getCookie());
+        response = httpClient.execute(examPagePost);
+
+        document = Jsoup.parse(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
+        System.out.println(document);
+
+
+        //考试列表行
+        Elements trs = document.getElementById("DataGrid1").getElementsByTag("tr");
+        List<ExamVO> examList = new ArrayList<>();
+        ExamVO examVO = null;
+        for (int i = 1; i < trs.size(); i++) {
+            examVO = new ExamVO();
+            //课程名
+            String courseName = trs.get(i).getElementsByTag("td").get(1).text();
+            //学生姓名
+            String stuName = trs.get(i).getElementsByTag("td").get(2).text();
+            //考试时间
+            String examTime = trs.get(i).getElementsByTag("td").get(3).text();
+            //考试地点
+            String examPlace = trs.get(i).getElementsByTag("td").get(4).text();
+
+            examVO.setCourseName(courseName);
+            examVO.setStuName(stuName);
+            examVO.setExamTime(examTime);
+            examVO.setExamPlace(examPlace);
+            examList.add(examVO);
+        }
+        return examList;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.starix.scorequery.service;
 
 import com.starix.scorequery.pojo.LoginResult;
+import com.starix.scorequery.vo.ExamVO;
 import com.starix.scorequery.vo.ScoreVO;
 
 import java.io.IOException;
@@ -23,7 +24,7 @@ public interface SpiderService {
 
 
     /**
-     * 抓取成绩
+     * 抓取成绩信息
      * @param loginResult 登录成功之后的必要信息
      * @param year 学年
      * @param semester 学期
@@ -31,6 +32,15 @@ public interface SpiderService {
      */
     List<ScoreVO> getScore(LoginResult loginResult, String year, String semester) throws IOException;
 
+
+    /**
+     * 抓取考试信息
+     * @param loginResult
+     * @param year
+     * @param semester
+     * @return
+     */
+    List<ExamVO> getExam(LoginResult loginResult, String year, String semester) throws IOException, Exception;
 
     /**
      * 获得查成绩页面年份下拉列表数据
@@ -46,4 +56,5 @@ public interface SpiderService {
      * @return
      */
     List<String> getExamYearOptionsList(LoginResult loginResult) throws Exception;
+
 }

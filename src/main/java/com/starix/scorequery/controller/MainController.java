@@ -4,6 +4,7 @@ import com.starix.scorequery.pojo.LoginResult;
 import com.starix.scorequery.response.CommonResult;
 import com.starix.scorequery.response.ResultCode;
 import com.starix.scorequery.service.SpiderService;
+import com.starix.scorequery.vo.ExamVO;
 import com.starix.scorequery.vo.ScoreVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -55,6 +56,27 @@ public class MainController {
 
         return CommonResult.success(scoreList);
     }
+
+
+    @GetMapping("/queryExam")
+    public CommonResult doQueryExam(String year, String semester, HttpSession httpSession) throws Exception {
+
+        if (StringUtils.isEmpty(year) || StringUtils.isEmpty(semester)){
+            return CommonResult.failed(ResultCode.VALIDATE_FAILED);
+        }
+
+        LoginResult loginResult = (LoginResult) httpSession.getAttribute("studentLoginInfo");
+
+        if (loginResult == null){
+            return CommonResult.fail(ResultCode.UNAUTHORIZED.getCode(),"你还没有登录或者登录信息已经过期");
+        }
+
+        List<ExamVO> scoreList = spiderService.getExam(loginResult, year, semester);
+
+        return CommonResult.success(scoreList);
+    }
+
+
 
 
     //获得查成绩页面年份下拉列表数据
