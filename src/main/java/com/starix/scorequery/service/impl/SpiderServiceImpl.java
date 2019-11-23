@@ -1,7 +1,9 @@
 package com.starix.scorequery.service.impl;
 
+import com.starix.scorequery.entity.Student;
 import com.starix.scorequery.exception.CustomException;
 import com.starix.scorequery.pojo.LoginResult;
+import com.starix.scorequery.repository.StudentRepository;
 import com.starix.scorequery.response.CommonResult;
 import com.starix.scorequery.service.SpiderService;
 import com.starix.scorequery.vo.ExamVO;
@@ -22,6 +24,7 @@ import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,6 +47,9 @@ public class SpiderServiceImpl implements SpiderService {
 
     // private static final String PYTHON_PATH = "F:\\IdeaProjects\\project\\gdou-score-query\\src\\main\\resources\\python\\code_ocr.py";
     private static final String PYTHON_PATH = "/opt/server/gdou_score_query/pyhton/code_ocr.py";
+
+    @Autowired
+    private StudentRepository studentRepository;
 
     @Override
     public LoginResult login(String xh, String password) throws Exception {
@@ -326,5 +332,14 @@ public class SpiderServiceImpl implements SpiderService {
         }
 
         return yearList;
+    }
+
+    @Override
+    public LoginResult loginByOpenid(String openid) throws Exception {
+        Student student = studentRepository.findByOpenid(openid);
+        if (student == null){
+            throw new CustomException(CommonResult.failed("未绑定学号"));
+        }
+        return login(student.getXh(), student.getPassword());
     }
 }

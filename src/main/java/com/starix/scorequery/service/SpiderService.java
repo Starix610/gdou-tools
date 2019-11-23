@@ -57,4 +57,12 @@ public interface SpiderService {
      */
     List<String> getExamYearOptionsList(LoginResult loginResult) throws Exception;
 
+
+    /**
+     * 通过openid查询已绑定的学号信息实现自动登录
+     * @param openid
+     * @return
+     * @throws Exception
+     */
+    LoginResult loginByOpenid(String openid) throws Exception;
 }

@@ -3,6 +3,7 @@ package com.starix.scorequery.controller;
 import com.starix.scorequery.pojo.LoginResult;
 import com.starix.scorequery.response.CommonResult;
 import com.starix.scorequery.response.ResultCode;
+import com.starix.scorequery.service.SchoolInfoQueryService;
 import com.starix.scorequery.service.SpiderService;
 import com.starix.scorequery.vo.ExamVO;
 import com.starix.scorequery.vo.ScoreVO;
@@ -26,6 +27,8 @@ public class MainController {
 
     @Autowired
     private SpiderService spiderService;
+    @Autowired
+    private SchoolInfoQueryService schoolInfoQueryService;
 
     @PostMapping("/login")
     public CommonResult doLogin(String xh, String password, HttpSession httpSession) throws Exception {
@@ -35,6 +38,35 @@ public class MainController {
         LoginResult loginResult = spiderService.login(xh, password);
 
         httpSession.setAttribute("studentLoginInfo", loginResult);
+
+        return CommonResult.success();
+    }
+
+
+    @PostMapping("/autoLogin")
+    public CommonResult doAuoLogin(String openid, HttpSession httpSession) throws Exception {
+        if (StringUtils.isEmpty(openid)){
+            return CommonResult.failed(ResultCode.VALIDATE_FAILED);
+        }
+
+        LoginResult loginResult = spiderService.loginByOpenid(openid);
+
+        httpSession.setAttribute("studentLoginInfo", loginResult);
+
+        return CommonResult.success();
+    }
+
+
+
+    @PostMapping("/bind")
+    public CommonResult doLogin(String openid, String xh, String password) throws Exception {
+        if (StringUtils.isEmpty(xh) || StringUtils.isEmpty(password)){
+            return CommonResult.failed(ResultCode.VALIDATE_FAILED);
+        }
+
+        spiderService.login(xh, password);
+
+        schoolInfoQueryService.bind(openid, xh, password);
 
         return CommonResult.success();
     }

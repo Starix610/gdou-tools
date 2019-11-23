@@ -176,7 +176,7 @@
     </style>
 </head>
 <body>
-<h2 style="color: white;text-align: center;margin-top: 100px;">考试查询</h2>
+<h2 style="color: white;text-align: center;margin-top: 100px;" id="title">考试查询</h2>
 <div id="wrapper" class="login-page">
     <div id="login_form" class="form">
         <form id="loginForm" class="login-form">
@@ -231,7 +231,89 @@
 
         });
     }
+
+    function do_auto_login(){
+        var param = new FormData();
+        param.append("openid",getQueryVariable("openid"));
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/x-www-form-urlencoded",
+            url: BASE_URL + "/autoLogin",
+            data: param,
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            success: function(data){
+                if(data.code == 200){
+                    window.location.href = BASE_URL + "/score-list.html"
+                }else {
+                    alert(data.message);
+                    $("#loading").hide();
+
+                    //窗口振动
+                    $("#login_form").removeClass('shake_effect');
+                    setTimeout(function () {
+                        $("#login_form").addClass('shake_effect')
+                    }, 1);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("服务器异常");
+                $("#loading").hide();
+            }
+
+        });
+    }function do_auto_login(){
+        var param = new FormData();
+        param.append("openid",getQueryVariable("openid"));
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/x-www-form-urlencoded",
+            url: BASE_URL + "/autoLogin",
+            data: param,
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            success: function(data){
+                if(data.code == 200){
+                    window.location.href = BASE_URL + "/exam-list.html"
+                }else {
+                    alert(data.message);
+                    $("#loading").hide();
+
+                    //窗口振动
+                    $("#login_form").removeClass('shake_effect');
+                    setTimeout(function () {
+                        $("#login_form").addClass('shake_effect')
+                    }, 1);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("服务器异常");
+                $("#loading").hide();
+            }
+
+        });
+    }
+
+
     $(function () {
+
+        //判断当前url是否携带openid
+        if (getQueryVariable("openid")){
+            //隐藏原来的登录框
+            $("#title").hide();
+            $("#login_form").hide();
+
+            $("#loading").css("margin-top","250px");
+            $("#loading").show();
+
+            do_auto_login();
+        }
+
+
         $("#login").click(function () {
             if ($("#xh").val() == '' || $("#password").val() == ''){
                 $("#info").text("信息填写不完整");

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>成绩查询</title>
+    <title>学号绑定</title>
     <link rel="stylesheet" href="css/loading.css">
     <style type="text/css">
         .login-page {
@@ -122,11 +122,11 @@
         /*}*/
 
         body {
-            background: #74aeb8; /* fallback for old browsers */
-            background: -webkit-linear-gradient(right, #76b8b2, #5cbdc2);
-            background: -moz-linear-gradient(right, #76b8b2, #5cbdc2);
-            background: -o-linear-gradient(right, #76b8b2, #5cbdc2);
-            background: linear-gradient(to left, #76b8b2, #5cbdc2);
+            background: #7385b8; /* fallback for old browsers */
+            background: -webkit-linear-gradient(right, #7385b8, #7eadc2);
+            background: -moz-linear-gradient(right, #7385b8, #7eadc2);
+            background: -o-linear-gradient(right, #7385b8, #7eadc2);
+            background: linear-gradient(to left, #7385b8, #7eadc2);
             font-family: "Roboto", sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -176,14 +176,14 @@
     </style>
 </head>
 <body>
-<h2 style="color: white;text-align: center;margin-top: 100px;" id="title">成绩查询</h2>
+<h2 style="color: white;text-align: center;margin-top: 100px;">学号绑定</h2>
 <div id="wrapper" class="login-page">
     <div id="login_form" class="form">
         <form id="loginForm" class="login-form">
             <input type="text" placeholder="学号" name="xh" id="xh"/>
             <input type="password" placeholder="密码" name="password" id="password"/>
             <div id="info" style="display:none;color: red;font-size: 12px;margin-bottom: 10px;word-wrap:break-word;">error info</div>
-            <button id="login">查 询</button>
+            <button id="login">绑定</button>
         </form>
     </div>
     <div id="loading" class="loading" style="margin-top: -30px;display: none">
@@ -197,25 +197,29 @@
 <script src="js/jquery-2.1.1.min.js"></script>
 <script src="js/app.js"></script>
 <script type="text/javascript">
-    function do_login() {
+    function do_bind() {
+        var params = new FormData();
+        params.append("xh",$("#xh").val());
+        params.append("password",$("#password").val());
+        params.append("openid",getQueryVariable("openid"));
         $("#info").hide();
         $("#loading").show();
         var params = $("#loginForm").serialize();
         $.ajax({
             type: "POST",
             contentType: "application/x-www-form-urlencoded",
-            url: BASE_URL + "/login",
+            url: BASE_URL + "/bind",
             data: params,
+            processData: false,
+            contentType: false,
             dataType: "json",
             success: function(data){
                 if(data.code == 200){
-                    window.location.href = BASE_URL + "/score-list.html"
+                    alert("绑定成功~公众号后台重新回复即可直接查询成绩或者考试")
                 }else {
                     // alert(data.message);
                     $("#info").text(data.message);
                     $("#info").show();
-                    $("#loading").hide();
-
 
                     //窗口振动
                     $("#login_form").removeClass('shake_effect');
@@ -223,6 +227,7 @@
                         $("#login_form").addClass('shake_effect')
                     }, 1);
                 }
+                $("#loading").hide();
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $("#info").text("服务器异常");
@@ -232,56 +237,7 @@
 
         });
     }
-
-    function do_auto_login(){
-        var param = new FormData();
-        param.append("openid",getQueryVariable("openid"));
-
-        $.ajax({
-            type: "POST",
-                contentType: "application/x-www-form-urlencoded",
-            url: BASE_URL + "/autoLogin",
-            data: param,
-            processData: false,
-            contentType: false,
-            dataType: "json",
-            success: function(data){
-                if(data.code == 200){
-                    window.location.href = BASE_URL + "/score-list.html"
-                }else {
-                    alert(data.message);
-                    $("#loading").hide();
-
-                    //窗口振动
-                    $("#login_form").removeClass('shake_effect');
-                    setTimeout(function () {
-                        $("#login_form").addClass('shake_effect')
-                    }, 1);
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert("服务器异常");
-                $("#loading").hide();
-            }
-
-        });
-    }
-
-
     $(function () {
-
-        //判断当前url是否携带openid
-        if (getQueryVariable("openid")){
-            //隐藏原来的登录框
-            $("#title").hide();
-            $("#login_form").hide();
-
-            $("#loading").css("margin-top","250px");
-            $("#loading").show();
-
-            do_auto_login();
-        }
-
         $("#login").click(function () {
             if ($("#xh").val() == '' || $("#password").val() == ''){
                 $("#info").text("信息填写不完整");
@@ -293,7 +249,7 @@
                 }, 1);
                 return false;
             }
-            do_login();
+            do_bind();
             return false;
         })
 
@@ -304,6 +260,7 @@
             }, 'slow');
         });
     })
+
 </script>
 </body>
 </html>
