@@ -176,10 +176,10 @@
     </style>
 </head>
 <body>
-<h2 style="color: white;text-align: center;margin-top: 100px;" id="title">考试查询</h2>
+<h2 style="color: white;text-align: center;margin-top: 100px; display: none;" id="title">考试查询</h2>
 <div id="wrapper" class="login-page">
-    <div id="login_form" class="form">
-        <form id="loginForm" class="login-form">
+    <div id="login_form" class="form" style="display: none;">
+        <form id="loginForm" class="login-form" >
             <input type="text" placeholder="学号" name="xh" id="xh"/>
             <input type="password" placeholder="密码" name="password" id="password"/>
             <div id="info" style="display:none;color: red;font-size: 12px;margin-bottom: 10px;word-wrap:break-word;">error info</div>
@@ -271,14 +271,13 @@
 
         //判断当前url是否携带openid
         if (getQueryVariable("openid")){
-            //隐藏原来的登录框
-            $("#title").hide();
-            $("#login_form").hide();
-
             $("#loading").css("margin-top","250px");
             $("#loading").show();
-
             do_auto_login();
+        }else {
+            //显示登录登录框
+            $("#title").show();
+            $("#login_form").show();
         }
 
 
