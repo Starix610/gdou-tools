@@ -209,13 +209,12 @@
             dataType: "json",
             success: function(data){
                 if(data.code == 200){
-                    window.location.href = BASE_URL + "/score-list.html"
+                    // window.location.href = BASE_URL + "/score-list.html"
+                    window.location.href = "http://starix.free.idcfengye.com/score-list.html"
                 }else {
                     // alert(data.message);
                     $("#info").text(data.message);
                     $("#info").show();
-                    $("#loading").hide();
-
 
                     //窗口振动
                     $("#login_form").removeClass('shake_effect');
@@ -223,6 +222,7 @@
                         $("#login_form").addClass('shake_effect')
                     }, 1);
                 }
+                $("#loading").hide();
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $("#info").text("服务器异常");
@@ -251,7 +251,6 @@
                     window.location.href = "http://starix.free.idcfengye.com/score-list.html"
                 }else {
                     alert(data.message);
-                    $("#loading").hide();
 
                     //窗口振动
                     $("#login_form").removeClass('shake_effect');
@@ -259,6 +258,7 @@
                         $("#login_form").addClass('shake_effect')
                     }, 1);
                 }
+                $("#loading").hide();
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 alert("服务器异常");

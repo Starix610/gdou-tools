@@ -247,10 +247,10 @@
             dataType: "json",
             success: function(data){
                 if(data.code == 200){
-                    window.location.href = BASE_URL + "/score-list.html"
+                    // window.location.href = BASE_URL + "/exam-list.html"
+                    window.location.href = "http://starix.free.idcfengye.com/exam-list.html"
                 }else {
                     alert(data.message);
-                    $("#loading").hide();
 
                     //窗口振动
                     $("#login_form").removeClass('shake_effect');
@@ -258,38 +258,7 @@
                         $("#login_form").addClass('shake_effect')
                     }, 1);
                 }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert("服务器异常");
                 $("#loading").hide();
-            }
-
-        });
-    }function do_auto_login(){
-        var param = new FormData();
-        param.append("openid",getQueryVariable("openid"));
-
-        $.ajax({
-            type: "POST",
-            contentType: "application/x-www-form-urlencoded",
-            url: BASE_URL + "/autoLogin",
-            data: param,
-            processData: false,
-            contentType: false,
-            dataType: "json",
-            success: function(data){
-                if(data.code == 200){
-                    window.location.href = BASE_URL + "/exam-list.html"
-                }else {
-                    alert(data.message);
-                    $("#loading").hide();
-
-                    //窗口振动
-                    $("#login_form").removeClass('shake_effect');
-                    setTimeout(function () {
-                        $("#login_form").addClass('shake_effect')
-                    }, 1);
-                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 alert("服务器异常");
