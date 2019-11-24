@@ -31,7 +31,7 @@ public class MainController {
     private SchoolInfoQueryService schoolInfoQueryService;
 
     @PostMapping("/login")
-    public CommonResult doLogin(String xh, String password, HttpSession httpSession) throws Exception {
+    public CommonResult doBind(String xh, String password, HttpSession httpSession) throws Exception {
         if (StringUtils.isEmpty(xh) || StringUtils.isEmpty(password)){
             return CommonResult.failed(ResultCode.VALIDATE_FAILED);
         }
@@ -59,7 +59,7 @@ public class MainController {
 
 
     @PostMapping("/bind")
-    public CommonResult doLogin(String openid, String xh, String password) throws Exception {
+    public CommonResult doBind(String openid, String xh, String password) throws Exception {
         if (StringUtils.isEmpty(openid) || StringUtils.isEmpty(xh) || StringUtils.isEmpty(password)){
             return CommonResult.failed(ResultCode.VALIDATE_FAILED);
         }
