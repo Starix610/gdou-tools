@@ -204,7 +204,6 @@
         params.append("openid",getQueryVariable("openid"));
         $("#info").hide();
         $("#loading").show();
-        var params = $("#loginForm").serialize();
         $.ajax({
             type: "POST",
             contentType: "application/x-www-form-urlencoded",
