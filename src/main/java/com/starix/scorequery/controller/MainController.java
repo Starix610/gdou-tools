@@ -60,7 +60,7 @@ public class MainController {
 
     @PostMapping("/bind")
     public CommonResult doLogin(String openid, String xh, String password) throws Exception {
-        if (StringUtils.isEmpty(xh) || StringUtils.isEmpty(password)){
+        if (StringUtils.isEmpty(openid) || StringUtils.isEmpty(xh) || StringUtils.isEmpty(password)){
             return CommonResult.failed(ResultCode.VALIDATE_FAILED);
         }
 
