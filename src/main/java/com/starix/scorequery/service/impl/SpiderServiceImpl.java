@@ -298,6 +298,10 @@ public class SpiderServiceImpl implements SpiderService {
         HttpResponse resp = httpClient.execute(scorePagePost);
         document = Jsoup.parse(EntityUtils.toString(resp.getEntity(), Consts.UTF_8));
 
+        if (document.toString().contains("请先完成评价")){
+            throw new CustomException(CommonResult.failed("请先完成教学评价，才能查看成绩！"));
+        }
+
         //成绩查询年份下拉列表数据
         Elements yearOptions = document.getElementById("ddlXN").getElementsByTag("option");
         List<String> yearList = new ArrayList<>();

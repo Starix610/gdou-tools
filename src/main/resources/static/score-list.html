@@ -110,10 +110,10 @@
                         $("#tableList").append(html);
                     }else {
                         $("#info").show();
-                        // alert("没有数据");
                     }
                 } else {
-                    alert(data.message);
+                    $("#info").html(data.message);
+                    $("#info").show();
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -138,6 +138,8 @@
                     }
                 } else {
                     alert(data.message);
+                    window.location.href = BASE_URL + "/score.html"
+                    return false;
                 }
             }
         })
