@@ -23,15 +23,20 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -88,7 +93,7 @@ public class SpiderServiceImpl implements SpiderService {
         params.add(new BasicNameValuePair("txtSecretCode", result.get(0)));
         //用户类型
         params.add(new BasicNameValuePair("RadioButtonList1", "学生"));
-        //未知参数，但是必填
+        //未知参数(应该是用于标识当前点击的按钮)，必填
         params.add(new BasicNameValuePair("Button1", ""));
         //设置字符
         loginPost.setEntity(new UrlEncodedFormEntity(params, Consts.UTF_8));
@@ -114,7 +119,7 @@ public class SpiderServiceImpl implements SpiderService {
             HttpResponse homePageResp = httpclient.execute(homePageGet);
             String homePageHtml = EntityUtils.toString(homePageResp.getEntity(), Consts.UTF_8);
 
-            return new LoginResult(cookie, homePageHtml,BASE_URL + location);
+            return new LoginResult(cookie, homePageHtml,BASE_URL + location, xh);
 
         }else {
             String html = EntityUtils.toString(loginResp.getEntity(), Consts.UTF_8);
@@ -346,4 +351,186 @@ public class SpiderServiceImpl implements SpiderService {
         }
         return login(student.getXh(), student.getPassword());
     }
+
+
+    @Override
+    public void autoEvaluate(LoginResult loginResult, String content) throws Exception {
+
+        Document document = Jsoup.parse(loginResult.getHomePageHtml());
+
+        Elements lis = document.getElementById("headDiv").getElementsByAttributeValue("class", "nav").get(0)
+                .getElementsByAttributeValue("class", "top").get(3).getElementsByTag("li");
+
+        HttpClient httpClient = HttpClientBuilder.create().build();
+
+        if (lis.size() <= 1){
+            throw new CustomException(CommonResult.fail(300, "你已经完成评教或者评教未开启"));
+        }
+
+        for (int k = 1; k < lis.size(); k++) {
+            //进入评教页面
+            String evaluationURL = lis.get(k).getElementsByTag("a").get(0).attr("href");
+            String kcName = lis.get(k).getElementsByTag("a").get(0).text();
+            HttpGet examPageGet = new HttpGet(BASE_URL + "/" + evaluationURL);
+            BasicHeader referer = new BasicHeader("Referer", loginResult.getRefererURL());
+            examPageGet.setHeader(loginResult.getCookie());
+            examPageGet.setHeader(referer);
+            HttpResponse response = httpClient.execute(examPageGet);
+            document = Jsoup.parse(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
+
+            //获取VIEWSTATE
+            String viewState = document.getElementById("Form1").getElementsByAttributeValue("name", "__VIEWSTATE").get(0).val();
+
+            //处理某些特殊异常情况(已完成评教但是lis.size()>1)
+            if (document.getElementById("pjkc").children().size() == 0){
+                throw new CustomException(CommonResult.fail(300, "你已经完成评教或者评教未开启"));
+            }
+
+            //pjkc参数（年份和课程号）
+            String pjkc = document.getElementById("pjkc").getElementsByAttributeValue("selected", "selected").get(0).val();
+
+            //教师评价等级选项参数
+            Elements selects = document.getElementById("DataGrid1").getElementsByTag("select");
+            //课程有多位教师的话，删除除了第一列之外的其他教师列表，只提交一位教师的评价数据
+            selects.removeIf(s -> !s.attr("name").contains("JS1"));
+            List<String> paramNames1 = selects.eachAttr("name");
+
+            //教材评价等级选项参数
+            List<String> paramNames2 = null;
+            if (document.getElementById("dgPjc") != null){
+                paramNames2 = document.getElementById("dgPjc").getElementsByTag("select").eachAttr("name");
+            }
+
+
+            //评价内容
+            String pjxx = content;
+
+
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("__VIEWSTATE", viewState));
+            params.add(new BasicNameValuePair("pjxx", pjxx));
+
+            //教师评价等级参数列表
+            ArrayList<BasicNameValuePair> paramPairs = new ArrayList<>();
+            //取一个随机索引，使评价等级选项列表中随机来一个B（评价等级全相同会被禁止提交）
+            int randomIndex = (int) (Math.random() * paramNames1.size());
+            for (int i = 0; i < paramNames1.size(); i++) {
+                if (i == randomIndex){
+                    paramPairs.add(new BasicNameValuePair(paramNames1.get(i), "B"));
+                    continue;
+                }
+                paramPairs.add(new BasicNameValuePair(paramNames1.get(i), "A"));
+            }
+            params.addAll(paramPairs);
+            //教材评价等级参数列表
+            if (paramNames2 != null){
+                paramPairs = new ArrayList<>();
+                randomIndex = (int) (Math.random() * paramNames2.size());
+                for (int i = 0; i < paramNames2.size(); i++) {
+                    if (i == randomIndex){
+                        paramPairs.add(new BasicNameValuePair(paramNames2.get(i), "B"));
+                        continue;
+                    }
+                    paramPairs.add(new BasicNameValuePair(paramNames2.get(i), "A"));
+                }
+            }
+            params.addAll(paramPairs);
+
+            params.add(new BasicNameValuePair("pjkc", pjkc));
+            params.add(new BasicNameValuePair("Button1", ""));
+
+            HttpPost evaluatePost = new HttpPost(BASE_URL + "/" + evaluationURL);
+            evaluatePost.setEntity(new UrlEncodedFormEntity(params, Consts.UTF_8));
+            evaluatePost.setHeader(referer);
+            evaluatePost.setHeader(loginResult.getCookie());
+            HttpResponse saveEvaluationResp = httpClient.execute(evaluatePost);
+            String respHtml = EntityUtils.toString(saveEvaluationResp.getEntity(), Consts.UTF_8);
+            document = Jsoup.parse(respHtml);
+
+            //若出现直接包含在<script>标签内的alert语句的说明有错误信息，提交失败
+            if (document.toString().contains("<script>alert") && !document.toString().contains("所有评价已完成")){
+                System.out.println(document.toString());
+                log.error("[{}]评价失败=========>[{}]", loginResult.getXh(), kcName);
+                //自定义300状态码
+                throw new CustomException(CommonResult.fail(300,"评教失败，请稍后重试"));
+            }else {
+                log.info("[{}]评价成功=========>[{}]", loginResult.getXh(), kcName);
+            }
+        }
+
+        //执行最终提交
+        evalutionSubmit(loginResult, lis, document);
+
+    }
+
+
+    /**
+     * 执行最终提交
+     */
+    private void evalutionSubmit(LoginResult loginResult, Elements lis, Document document) throws Exception {
+        //提交按钮可用说明已经评价完成，可以执行最后提交
+        String submitDisabled = document.getElementById("Button2").attr("disabled");
+        if (!StringUtils.isEmpty(submitDisabled)){
+            log.error("[{}]评价未完成", loginResult.getXh());
+            throw new CustomException(CommonResult.fail(300,"评教未完成，请稍后重试"));
+        }else{
+            log.info("[{}]所有评价已完成，正在提交", loginResult.getXh());
+            HttpClient httpClient = HttpClientBuilder.create().build();
+            //进入第一个评教页面
+            String evaluationURL = lis.get(1).getElementsByTag("a").get(0).attr("href");
+            HttpGet examPageGet = new HttpGet(BASE_URL + "/" + evaluationURL);
+            BasicHeader referer = new BasicHeader("Referer", loginResult.getRefererURL());
+            examPageGet.setHeader(loginResult.getCookie());
+            examPageGet.setHeader(referer);
+            HttpResponse response = httpClient.execute(examPageGet);
+            document = Jsoup.parse(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
+
+            //获取VIEWSTATE
+            String viewState = document.getElementById("Form1").getElementsByAttributeValue("name", "__VIEWSTATE").get(0).val();
+            //pjkc参数（年份和课程号）
+            String pjkc = document.getElementById("pjkc").getElementsByAttributeValue("selected", "selected").get(0).val();
+            String pjxx = document.getElementById("pjxx").text();
+
+            //教师评价等级选项参数
+            Elements selects1 = document.getElementById("DataGrid1").getElementsByTag("select");
+            //课程有多位教师的话，删除除了第一列之外的其他教师列表，只提交一位教师的评价数据
+            selects1.removeIf(s -> !s.attr("name").contains("JS1"));
+
+            List<NameValuePair> params = new ArrayList<>();
+
+            for (Element select : selects1) {
+                params.add(new BasicNameValuePair(select.attr("name"), select.getElementsByAttribute("selected").get(0).val()));
+            }
+            //教材评价等级选项参数
+            if (document.getElementById("dgPjc") != null){
+                Elements selects2 = document.getElementById("dgPjc").getElementsByTag("select");
+                for (Element select : selects2) {
+                    params.add(new BasicNameValuePair(select.attr("name"), select.getElementsByAttribute("selected").get(0).val()));
+                }
+            }
+
+            params.add(new BasicNameValuePair("__EVENTTARGET", ""));
+            params.add(new BasicNameValuePair("__EVENTARGUMENT", ""));
+            params.add(new BasicNameValuePair("__VIEWSTATE", viewState));
+            params.add(new BasicNameValuePair("pjkc", pjkc));
+            params.add(new BasicNameValuePair("pjxx", pjxx));
+            params.add(new BasicNameValuePair("txt1", ""));
+            params.add(new BasicNameValuePair("TextBox1", "0"));
+            params.add(new BasicNameValuePair("Button2", ""));
+            HttpPost submitPost = new HttpPost(BASE_URL + "/" + evaluationURL);
+            submitPost.setEntity(new UrlEncodedFormEntity(params, Consts.UTF_8));
+            referer = new BasicHeader("Referer", loginResult.getRefererURL());
+            submitPost.setHeader(referer);
+            submitPost.setHeader(loginResult.getCookie());
+            HttpResponse saveEvaluationResp = httpClient.execute(submitPost);
+            String respHtml = EntityUtils.toString(saveEvaluationResp.getEntity(), Consts.UTF_8);
+            if (respHtml.contains("您已完成评价")){
+                log.info("[{}]评教成功", loginResult.getXh());
+            }else {
+                System.out.println(document.toString());
+                throw new CustomException(CommonResult.fail(300, "评价提交失败，请稍后重试"));
+            }
+        }
+    }
+
 }

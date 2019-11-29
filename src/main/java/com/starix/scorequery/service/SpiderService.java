@@ -65,4 +65,12 @@ public interface SpiderService {
      * @throws Exception
      */
     LoginResult loginByOpenid(String openid) throws Exception;
+
+
+    /**
+     * 一键自动评教
+     * @param loginResult
+     * @throws Exception
+     */
+    void autoEvaluate(LoginResult loginResult, String content) throws Exception;
 }

@@ -24,4 +24,6 @@ public class LoginResult {
 
     private String refererURL;
 
+    private String xh;
+
 }

@@ -31,7 +31,7 @@ public class MainController {
     private SchoolInfoQueryService schoolInfoQueryService;
 
     @PostMapping("/login")
-    public CommonResult doBind(String xh, String password, HttpSession httpSession) throws Exception {
+    public CommonResult doLogin(String xh, String password, HttpSession httpSession) throws Exception {
         if (StringUtils.isEmpty(xh) || StringUtils.isEmpty(password)){
             return CommonResult.failed(ResultCode.VALIDATE_FAILED);
         }
@@ -132,6 +132,15 @@ public class MainController {
         }
         List<String> yearOptionsList = spiderService.getExamYearOptionsList(loginResult);
         return CommonResult.success(yearOptionsList);
+    }
+
+
+    //自动评教
+    @PostMapping("/autoEvaluate")
+    public CommonResult doAutoEval(String xh, String password, String content) throws Exception {
+        LoginResult loginResult = spiderService.login(xh, password);
+        spiderService.autoEvaluate(loginResult,content);
+        return CommonResult.success();
     }
 
 
