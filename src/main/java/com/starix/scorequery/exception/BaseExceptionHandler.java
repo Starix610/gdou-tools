@@ -31,7 +31,7 @@ public class BaseExceptionHandler {
         }else {
             // 系统异常
             logger.error("系统内部异常:[{}]",e.getMessage(), e);
-            return CommonResult.failed("服务器似乎遇到了一些问题");
+            return CommonResult.failed("服务器似乎遇到了一些问题，请稍后重试");
         }
     }
 

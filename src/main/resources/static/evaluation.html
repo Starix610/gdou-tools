@@ -250,7 +250,8 @@
                 }, 1);
                 return false;
             }
-            re = /[\u4E00-\u9FA5]/g; //测试中文字符的正则表达式
+            //测试中文字符的正则表达式
+            re = /[\u4E00-\u9FA5]/g;
             //中文字数小于5个禁止提交
             var content = $('#content').val();
             if (!re.test(content) || content.match(re).length < 5) {
