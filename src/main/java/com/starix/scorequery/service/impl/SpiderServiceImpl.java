@@ -364,7 +364,7 @@ public class SpiderServiceImpl implements SpiderService {
         HttpClient httpClient = HttpClientBuilder.create().build();
 
         if (lis.size() <= 1){
-            throw new CustomException(CommonResult.fail(300, "你已经完成评教或者评教未开启"));
+            throw new CustomException(CommonResult.fail(300, "你已经完成评教啦！"));
         }
 
         for (int k = 1; k < lis.size(); k++) {
@@ -388,7 +388,7 @@ public class SpiderServiceImpl implements SpiderService {
 
             //处理某些特殊异常情况(已完成评教但是lis.size()>1)
             if (document.getElementById("pjkc").children().size() == 0){
-                throw new CustomException(CommonResult.fail(300, "你已经完成评教或者评教未开启"));
+                throw new CustomException(CommonResult.fail(300, "你已经完成评教！"));
             }
 
             //pjkc参数（年份和课程号）
