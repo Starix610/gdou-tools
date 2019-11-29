@@ -378,6 +378,11 @@ public class SpiderServiceImpl implements SpiderService {
             HttpResponse response = httpClient.execute(examPageGet);
             document = Jsoup.parse(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
 
+            //处理jw系统服务器异常导致没有返回正常页面
+            if(document.getElementById("Form1") == null){
+                throw new CustomException(CommonResult.fail(300, "教务系统服务器异常，请稍后重试"));
+            }
+
             //获取VIEWSTATE
             String viewState = document.getElementById("Form1").getElementsByAttributeValue("name", "__VIEWSTATE").get(0).val();
 
