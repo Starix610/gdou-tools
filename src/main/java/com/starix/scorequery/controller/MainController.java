@@ -7,6 +7,7 @@ import com.starix.scorequery.service.SchoolInfoQueryService;
 import com.starix.scorequery.service.SpiderService;
 import com.starix.scorequery.vo.ExamVO;
 import com.starix.scorequery.vo.ScoreVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,6 +24,7 @@ import java.util.List;
  */
 @RestController
 @CrossOrigin
+@Slf4j
 public class MainController {
 
     @Autowired
@@ -64,6 +66,7 @@ public class MainController {
             return CommonResult.failed(ResultCode.VALIDATE_FAILED);
         }
 
+        log.info("[{}]正在绑定学号",xh);
         spiderService.login(xh, password);
 
         schoolInfoQueryService.bind(openid, xh, password);
@@ -84,6 +87,7 @@ public class MainController {
             return CommonResult.fail(ResultCode.UNAUTHORIZED.getCode(),"你还没有登录或者登录信息已经过期");
         }
 
+        log.info("[{}]正在查询成绩",loginResult.getXh());
         List<ScoreVO> scoreList = spiderService.getScore(loginResult, year, semester);
 
         return CommonResult.success(scoreList);
@@ -103,6 +107,7 @@ public class MainController {
             return CommonResult.fail(ResultCode.UNAUTHORIZED.getCode(),"你还没有登录或者登录信息已经过期");
         }
 
+        log.info("[{}]正在查询考试",loginResult.getXh());
         List<ExamVO> scoreList = spiderService.getExam(loginResult, year, semester);
 
         return CommonResult.success(scoreList);
@@ -139,6 +144,7 @@ public class MainController {
     @PostMapping("/autoEvaluate")
     public CommonResult doAutoEval(String xh, String password, String content) throws Exception {
         LoginResult loginResult = spiderService.login(xh, password);
+        log.info("[{}]正在自动评教",loginResult.getXh());
         spiderService.autoEvaluate(loginResult,content);
         return CommonResult.success();
     }
