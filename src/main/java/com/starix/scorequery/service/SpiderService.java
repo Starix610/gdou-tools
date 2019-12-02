@@ -69,8 +69,8 @@ public interface SpiderService {
 
     /**
      * 一键自动评教
-     * @param loginResult
+     * @param mode 一键评教模式：0->全程自动，1->自动填写，官网手动修改提交
      * @throws Exception
      */
-    void autoEvaluate(LoginResult loginResult, String content) throws Exception;
+    void autoEvaluate(LoginResult loginResult, String content, Integer mode) throws Exception;
 }

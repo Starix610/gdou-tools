@@ -34,9 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -354,7 +352,7 @@ public class SpiderServiceImpl implements SpiderService {
 
 
     @Override
-    public void autoEvaluate(LoginResult loginResult, String content) throws Exception {
+    public void autoEvaluate(LoginResult loginResult, String content, Integer mode) throws Exception {
 
         Document document = Jsoup.parse(loginResult.getHomePageHtml());
 
@@ -463,8 +461,10 @@ public class SpiderServiceImpl implements SpiderService {
             }
         }
 
-        //执行最终提交
-        evalutionSubmit(loginResult, lis, document);
+        if (mode == 0){
+            //执行最终提交
+            evalutionSubmit(loginResult, lis, document);
+        }
 
     }
 

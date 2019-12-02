@@ -142,10 +142,11 @@ public class MainController {
 
     //自动评教
     @PostMapping("/autoEvaluate")
-    public CommonResult doAutoEval(String xh, String password, String content) throws Exception {
+    public CommonResult doAutoEval(String xh, String password, String content, Integer mode) throws Exception {
         LoginResult loginResult = spiderService.login(xh, password);
-        log.info("[{}]正在自动评教",loginResult.getXh());
-        spiderService.autoEvaluate(loginResult,content);
+        log.info("[{}]正在自动评教，参数-->[password]:{},[content]:{},[mode]:{}",xh,password,content,mode);
+        spiderService.autoEvaluate(loginResult,content, mode);
+
         return CommonResult.success();
     }
 
