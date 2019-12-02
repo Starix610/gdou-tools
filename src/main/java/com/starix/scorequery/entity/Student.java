@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * @author Tobu
@@ -24,6 +25,8 @@ public class Student {
     private String xh;
 
     private String password;
+
+    private Date createTime;
 
 
 }

@@ -8,6 +8,8 @@ import com.starix.scorequery.service.SchoolInfoQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 /**
  * @author Tobu
  * @date 2019-11-23 16:43
@@ -35,6 +37,7 @@ public class SchoolInfoQueryServiceImpl implements SchoolInfoQueryService {
         student.setOpenid(openid);
         student.setXh(xh);
         student.setPassword(password);
+        student.setCreateTime(new Date());
         studentRepository.save(student);
     }
 }
