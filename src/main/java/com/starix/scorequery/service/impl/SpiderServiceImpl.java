@@ -141,39 +141,30 @@ public class SpiderServiceImpl implements SpiderService {
 
         Document document = Jsoup.parse(loginResult.getHomePageHtml());
 
+        HttpClient httpClient = HttpClientBuilder.create().build();
+
         //查成绩页面URL
         String scoreURL = document.getElementsByAttributeValue("onclick", "GetMc('成绩查询');").get(0).attr("href");
 
+        //进入查成绩页面。这里需要动态获取__VIEWSTATE。
+        HttpGet examPageGet = new HttpGet(BASE_URL + "/" + scoreURL);
+        BasicHeader referer = new BasicHeader("Referer", loginResult.getRefererURL());
+        examPageGet.setHeader(loginResult.getCookie());
+        examPageGet.setHeader(referer);
+        HttpResponse response = httpClient.execute(examPageGet);
+        document = Jsoup.parse(EntityUtils.toString(response.getEntity(), Consts.UTF_8));
+        String viewState = document.getElementById("Form1").getElementsByAttributeValue("name", "__VIEWSTATE").get(0).val();
+
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        //__VIEWSTATE可根据需要自己获取
-        params.add(new BasicNameValuePair("__VIEWSTATE", "dDwxODI2NTc3MzMwO3Q8cDxsPHhoOz47bDwyMDE3MTE2Mj" +
-                "E0Mjc7Pj47bDxpPDE+Oz47bDx0PDtsPGk8MT47aTwzPjtpPDU+O2k8Nz47aTw5PjtpPDExPjtpPDEzPjtpPDE2PjtpPDI2PjtpPDI" +
-                "3PjtpPDI4PjtpPDM1PjtpPDM3PjtpPDM5PjtpPDQxPjtpPDQ1Pjs+O2w8dDxwPHA8bDxUZXh0Oz47bDzlrablj7fvvJoyMDE3MTE" +
-                "2MjE0Mjc7Pj47Pjs7Pjt0PHA8cDxsPFRleHQ7PjtsPOWnk+WQje+8muWPsuaWh+adsDs+Pjs+Ozs+O3Q8cDxwPGw8VGV4dDs+O2w" +
-                "85a2m6Zmi77ya5pWw5a2m5LiO6K6h566X5py65a2m6ZmiOz4+Oz47Oz47dDxwPHA8bDxUZXh0Oz47bDzkuJPkuJrvvJo7Pj47Pjs" +
-                "7Pjt0PHA8cDxsPFRleHQ7PjtsPOiuoeeul+acuuenkeWtpuS4juaKgOacrzs+Pjs+Ozs+O3Q8cDxwPGw8VGV4dDs+O2w86KGM5pS" +
-                "/54+t77ya6K6h56eRMTE3NDs+Pjs+Ozs+O3Q8cDxwPGw8VGV4dDs+O2w8MjAxNzE2MjE7Pj47Pjs7Pjt0PHQ8cDxwPGw8RGF0YVR" +
-                "leHRGaWVsZDtEYXRhVmFsdWVGaWVsZDs+O2w8WE47WE47Pj47Pjt0PGk8Mz47QDxcZTsyMDE4LTIwMTk7MjAxNy0yMDE4Oz47QDx" +
-                "cZTsyMDE4LTIwMTk7MjAxNy0yMDE4Oz4+Oz47Oz47dDxwPDtwPGw8b25jbGljazs+O2w8d2luZG93LnByaW50KClcOzs+Pj47Oz47" +
-                "dDxwPDtwPGw8b25jbGljazs+O2w8d2luZG93LmNsb3NlKClcOzs+Pj47Oz47dDxwPHA8bDxWaXNpYmxlOz47bDxvPHQ+Oz4+Oz47O" +
-                "z47dDxAMDw7Ozs7Ozs7Ozs7Pjs7Pjt0PEAwPDs7Ozs7Ozs7Ozs+Ozs+O3Q8QDA8Ozs7Ozs7Ozs7Oz47Oz47dDw7bDxpPDA+O2k8MT4" +
-                "7aTwyPjtpPDQ+Oz47bDx0PDtsPGk8MD47aTwxPjs+O2w8dDw7bDxpPDA+O2k8MT47PjtsPHQ8QDA8Ozs7Ozs7Ozs7Oz47Oz47dDxAM" +
-                "Dw7Ozs7Ozs7Ozs7Pjs7Pjs+Pjt0PDtsPGk8MD47aTwxPjs+O2w8dDxAMDw7Ozs7Ozs7Ozs7Pjs7Pjt0PEAwPDs7Ozs7Ozs7Ozs+Ozs" +
-                "+Oz4+Oz4+O3Q8O2w8aTwwPjs+O2w8dDw7bDxpPDA+Oz47bDx0PEAwPDs7Ozs7Ozs7Ozs+Ozs+Oz4+Oz4+O3Q8O2w8aTwwPjtpPDE+O" +
-                "z47bDx0PDtsPGk8MD47PjtsPHQ8QDA8cDxwPGw8VmlzaWJsZTs+O2w8bzxmPjs+Pjs+Ozs7Ozs7Ozs7Oz47Oz47Pj47dDw7bDxpPD" +
-                "A+Oz47bDx0PEAwPHA8cDxsPFZpc2libGU7PjtsPG88Zj47Pj47Pjs7Ozs7Ozs7Ozs+Ozs+Oz4+Oz4+O3Q8O2w8aTwwPjs+O2w8dDw7" +
-                "bDxpPDA+Oz47bDx0PHA8cDxsPFRleHQ7PjtsPEhIWFk7Pj47Pjs7Pjs+Pjs+Pjs+Pjt0PEAwPDs7Ozs7Ozs7Ozs+Ozs+Oz4+Oz4+O" +
-                "z6y3xglOSssPBnZSlDHQ4Ani+9RzQ=="));
+        params.add(new BasicNameValuePair("__VIEWSTATE", viewState));
         params.add(new BasicNameValuePair("ddlXN", year));
         params.add(new BasicNameValuePair("ddlXQ", semester));
         params.add(new BasicNameValuePair("Button1", "按学期查询"));
         HttpPost scorePagePost = new HttpPost(BASE_URL + "/" + scoreURL);
         scorePagePost.setEntity(new UrlEncodedFormEntity(params, Consts.UTF_8));
-        BasicHeader referer = new BasicHeader("Referer", loginResult.getRefererURL());
         scorePagePost.setHeader(loginResult.getCookie());
         scorePagePost.setHeader(referer);
-        HttpClient httpClient = HttpClientBuilder.create().build();
         HttpResponse resp = httpClient.execute(scorePagePost);
         document = Jsoup.parse(EntityUtils.toString(resp.getEntity(), Consts.UTF_8));
 
