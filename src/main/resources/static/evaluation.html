@@ -268,7 +268,7 @@
             re = /[\u4E00-\u9FA5]/g;
             //中文字数小于5个禁止提交
             var content = $('#content').val();
-                if (!re.test(content) || content.match(re).length < 5 || content.match(re).length > 50) {
+                if (!re.test(content) || content.match(re).length <= 5 || content.match(re).length > 50) {
                 $("#info").text("必须包含5字以上50字以下的评价内容");
                 $("#info").show();
                 //窗口振动
