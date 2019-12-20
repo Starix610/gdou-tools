@@ -3,9 +3,9 @@
 
 主要技术栈：
 + Python第三方验证码识别库
-+ 前端Jquery+HTML
-+ 后台Springboot
-+ Java爬虫(Jsoup+HttpClient)
++ 前端：Jquery+HTML
++ 后台：Springboot
++ Java爬虫：Jsoup+HttpClient
 
 目前拥有的功能：
 + 成绩查询
