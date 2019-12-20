@@ -1,4 +1,4 @@
-# gdou-score-query
+# gdou-jw-tools
 ### 海大教务系统助手
 目前拥有的功能：
 + 成绩查询
