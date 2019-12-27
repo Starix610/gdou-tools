@@ -13,3 +13,16 @@
 + 一键评教
 
 ### 预览：
+<div align="center">
+<img src="https://github.com/Starix610/people-counting/raw/master/gdou-jw-tools/score.jpg" alt="image" width="300px">
+<img src="https://github.com/Starix610/people-counting/raw/master/gdou-jw-tools/evaluation.jpg" alt="image" width="300px">
+<img src="https://github.com/Starix610/people-counting/raw/master/gdou-jw-tools/score-list.jpg" alt="image" width="300px">
+<img src="https://github.com/Starix610/people-counting/raw/master/gdou-jw-tools/exam-list.jpg" alt=" image"width="300px">
+</div>
+
+### 功能已经集成到我的个人微信公众号上面：
+<div align="center">
+<img src="https://github.com/Starix610/people-counting/raw/master/gdou-jw-tools/qrcode.jpg" alt="image" width="200px">
+</div>
+
+
