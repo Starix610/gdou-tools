@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
 @Slf4j
 public class SpiderServiceImpl implements SpiderService {
 
-    private static final String BASE_URL = "http://210.38.137.125:8016";
+    private static final String BASE_URL = "http://210.38.137.126:8016";
 
     // python脚本位置
     // private static final String PYTHON_PATH = "F:\\IdeaProjects\\project\\gdou-score-query\\src\\main\\resources\\python\\code_ocr.py";
