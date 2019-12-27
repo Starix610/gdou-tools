@@ -50,7 +50,7 @@ public class SpiderServiceImpl implements SpiderService {
 
     // python脚本位置
     // private static final String PYTHON_PATH = "F:\\IdeaProjects\\project\\gdou-score-query\\src\\main\\resources\\python\\code_ocr.py";
-    private static final String PYTHON_PATH = "/opt/server/gdou_score_query/pyhton/code_ocr.py";
+    private static final String PYTHON_PATH = "/opt/server/gdou-jw-tools/pyhton/code_ocr.py";
 
     @Autowired
     private StudentRepository studentRepository;
