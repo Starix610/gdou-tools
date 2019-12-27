@@ -8,7 +8,7 @@ spring:
     #    data: classpath:db/data-h2.sql
     url: jdbc:mysql://139.196.102.109:3306/weixin_mp?characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
-    password: 6467
+    password: 646722
     druid:
       initial-size: 5 #连接池初始化大小
       min-idle: 10 #最小空闲连接数
