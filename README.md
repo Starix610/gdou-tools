@@ -1,4 +1,4 @@
-# readme_images/gdou-jw-tools
+# gdou-jw-tools
 ## 海大教务系统助手
 
 ### 主要技术栈：
