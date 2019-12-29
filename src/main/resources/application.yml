@@ -1,5 +1,9 @@
 server:
   port: 9800
+  ssl:
+    key-store: classpath:3262598_starix.top.pfx
+    key-store-password: Pr1ifVXd
+    key-store-type: PKCS12
 
 spring:
   datasource:
