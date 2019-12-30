@@ -130,7 +130,7 @@ public class SpiderServiceImpl implements SpiderService {
                 errInfo = m.group(1);
             }
             if (errInfo == null){
-                errInfo = "未知错误";
+                errInfo = "系统异常";
             }
             log.error("学号[{}]登录失败，原因:{}", xh, errInfo);
             throw new CustomException(CommonResult.failed(errInfo));
