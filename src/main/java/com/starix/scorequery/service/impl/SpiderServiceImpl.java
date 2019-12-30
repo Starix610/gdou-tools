@@ -74,7 +74,7 @@ public class SpiderServiceImpl implements SpiderService {
             inputReader.close();
             in.close();
         } else {
-            throw new CustomException(CommonResult.failed("脚本执行出错"));
+            throw new CustomException(CommonResult.failed("服务器异常"));
         }
 
         HttpClient httpclient = HttpClientBuilder.create().build();
