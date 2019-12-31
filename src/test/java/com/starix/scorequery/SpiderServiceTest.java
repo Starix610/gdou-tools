@@ -1,7 +1,5 @@
 package com.starix.scorequery;
 
-import com.starix.scorequery.exception.CustomException;
-import com.starix.scorequery.response.CommonResult;
 import com.starix.scorequery.service.SpiderService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
