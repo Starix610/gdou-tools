@@ -83,7 +83,7 @@ public class SpiderServiceImpl implements SpiderService {
         HttpPost loginPost = new HttpPost(BASE_URL + "/default2.aspx");
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         //__VIEWSTATE需要自己获取
-        params.add(new BasicNameValuePair("__VIEWSTATE", "dDwxNTMxMDk5Mzc0Ozs+OBE730NQqeUlEYO76T3Qls4CiUo="));
+        params.add(new BasicNameValuePair("__VIEWSTATE", "dDwxNTMxMDk5Mzc0Ozs+oHR0TeFaplX14wgfE2ZakJztUwk="));
         //学号
         params.add(new BasicNameValuePair("txtUserName", xh));
         //密码
