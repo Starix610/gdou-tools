@@ -1,12 +1,12 @@
 # gdou-jw-tools
-## 海大教务系统助手
+## GDOU校园助手
 
 ### 主要技术栈：
 + 前端：Jquery、HTML、CSS
-+ 后端：SpringBoot、JPA、MySQL
++ 后台：SpringBoot、JPA、MySQL
 + Java爬虫：Jsoup、HttpClient
 + Python爬虫：requests、BeautifulSoup
-+ 其它主要Python库：pytesseract、Pillow、school_api等
++ 其它主要Python库：pytesseract、Pillow、school_api、pyDes等
 
 ### 目前拥有的功能：
 + 成绩查询
