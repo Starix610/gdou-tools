@@ -227,12 +227,15 @@
             type: "POST",
             contentType: "application/json",
             url: BASE_URL + "/cpdaily/addUser",
-            data: params,
+            data: JSON.stringify(params),
             processData: false,
             dataType: "json",
             success: function(data){
                 if(data.code == 200){
                     alert("提交成功，将在每天中午12点为你进行自动签到！")
+                    $("#info").text("提交成功！");
+                    $("#info").css("color","green");
+                    $("#info").show();
                 }else {
                     // alert(data.message);
                     showErrInfo(data.message)
@@ -305,6 +308,7 @@
 
     function showErrInfo(info){
         $("#info").text(info);
+        $("#info").css("color","green");
         $("#info").show();
         //窗口振动
         $("#login_form").removeClass('shake_effect');

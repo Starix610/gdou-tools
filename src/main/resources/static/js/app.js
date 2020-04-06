@@ -1,5 +1,5 @@
-var BASE_URL = "http://localhost:9800"
-// var BASE_URL = "http://139.196.102.109:9800"
+var BASE_URL = "https://localhost:9800"
+// var BASE_URL = "https://139.196.102.109:9800"
 // var BASE_URL = "https://www.starix.top:9800"
 
 
