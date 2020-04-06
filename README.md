@@ -1,4 +1,4 @@
-# gdou-jw-tools
+# gdou-tools
 ## GDOU校园助手
 
 ### 主要技术栈：
