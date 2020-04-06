@@ -1,0 +1,8 @@
+spring:
+  profiles: prod
+
+python:
+  # python脚本绝对路径
+  path: /opt/server/gdou-jw-tools/pyhton/
+  # python命令行输出的字符编码，在不同环境下运行需要进行不同的设置：Windows下为GBK，Linux下为UTF-8
+  output-encoding: UTF-8

@@ -1,0 +1,8 @@
+spring:
+  profiles: dev
+
+python:
+  # python脚本绝对路径
+  path: F:\IdeaProjects\project\gdou-jw-tools\src\main\resources\python\
+  # python命令行输出的字符编码，在不同环境下运行需要进行不同的设置：Windows下为GBK，Linux下为UTF-8
+  output-encoding: GBK
