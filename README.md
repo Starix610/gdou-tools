@@ -2,7 +2,7 @@
 ## GDOU校园助手
 
 ### 主要技术栈：
-+ 前端：Jquery、HTML、CSS
++ 前端：JQuery、HTML、CSS
 + 后台：SpringBoot、JPA、MySQL
 + Java爬虫：Jsoup、HttpClient
 + Python爬虫：requests、BeautifulSoup
