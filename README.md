@@ -2,15 +2,18 @@
 ## 海大教务系统助手
 
 ### 主要技术栈：
-+ Python第三方验证码识别库
-+ 前端：Jquery+HTML+CSS
-+ 后台：SpringBoot+JPA
-+ Java爬虫：Jsoup+HttpClient
++ 前端：Jquery、HTML、CSS
++ 后端：SpringBoot、JPA、MySQL
++ Java爬虫：Jsoup、HttpClient
++ Python爬虫：requests、BeautifulSoup
++ 其它主要Python库：pytesseract、Pillow、school_api等
 
-### 拥有的功能：
+### 目前拥有的功能：
 + 成绩查询
 + 考试查询
 + 一键评教
++ 自动抢课
++ 今日校园自动签到
 
 ### 预览：
 <div align="center">
