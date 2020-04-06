@@ -24,8 +24,8 @@ public class CpdailyAutoSignInSchedule {
     private CpdailyUserRepository userRepository;
 
     //定时为已记录的账号进行签到，每天中午12点执行一次
-    @Scheduled(fixedRate = 1000*60*60*24)
-    // @Scheduled(cron = "0 0 12 * * ?")
+    // @Scheduled(fixedRate = 1000*60*60*24)
+    @Scheduled(cron = "0 0 12 * * ?")
     public void signIntask() throws Exception {
         log.info("==============开始执行签到==============");
         List<CpdailyUser> userList = userRepository.findAll();
