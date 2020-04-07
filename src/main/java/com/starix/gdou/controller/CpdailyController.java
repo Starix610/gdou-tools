@@ -3,6 +3,7 @@ package com.starix.gdou.controller;
 import com.starix.gdou.entity.CpdailyUser;
 import com.starix.gdou.response.CommonResult;
 import com.starix.gdou.service.CpdailyUserService;
+import com.starix.gdou.task.CpdailySignInAsyncTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -36,6 +37,7 @@ public class CpdailyController {
             return CommonResult.validateFailed(allErrors.get(0).getDefaultMessage());
         }
         cpdailyUserService.saveUser(user);
+        new CpdailySignInAsyncTask().doSignIn(user);
         return CommonResult.success();
     }
 

@@ -30,7 +30,7 @@ public class CpdailySignInAsyncTask {
     private String OUTPUT_ENCODING;
 
     @Async
-    public Future<String> doSignIn(CpdailyUser cpdailyUser) throws Exception{
+    public Future<String> doSignIn(CpdailyUser cpdailyUser) throws Exception {
         String[] cmd = new String[16];
         cmd[0] = "python";
         cmd[1] = "cpdaily_sign_in.py";
@@ -48,7 +48,13 @@ public class CpdailySignInAsyncTask {
         cmd[13] = cpdailyUser.getPosition();
         cmd[14] = "--email";
         cmd[15] = cpdailyUser.getEmail();
-        Process process = Runtime.getRuntime().exec(cmd, null, new File(PYTHON_PATH_AUTH));
+        Process process = null;
+        try {
+            process = Runtime.getRuntime().exec(cmd, null, new File(PYTHON_PATH_AUTH));
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("Python签到脚本执行出错：{}", e.getMessage());
+        }
         int status = process.waitFor();
         if (status != 0){
             log.error("Python签到脚本执行出错，status:{}", status);

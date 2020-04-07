@@ -43,6 +43,7 @@
             background: #4CAF50;
             width: 100%;
             border: 0;
+            border-radius: 10px;
             padding: 13px;
             color: #FFFFFF;
             font-size: 14px;
@@ -173,6 +174,16 @@
             color: #fff;
             font-family: "Microsoft YaHei";
         }
+
+        #getPos {
+            background: #2196F3;
+            width: 50%;
+            font-size: 10px;
+            border-radius: 0;
+            margin-bottom: 15px;
+            padding: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -185,11 +196,13 @@
             <input type="password" placeholder="密码" name="password" id="password"/>
             <input type="text" placeholder="经度" name="longitude" id="longitude"/>
             <input type="text" placeholder="纬度" name="latitude" id="latitude"/>
-            <input type="text" placeholder="签到内容" name="abnormalreason" id="abnormalreason"/>
             <input type="text" placeholder="地理位置" name="position" id="position"/>
+            <button type="button" id="getPos" onclick="getLocation()">点此获取地理位置</button>
+            <div id="posInfo" style="display:none;color: red;font-size: 10px;margin-bottom: 15px;margin-top: -5px;word-wrap:break-word;">info</div>
+            <input type="text" placeholder="签到内容" name="abnormalreason" id="abnormalreason"/>
             <input type="text" placeholder="邮箱（用于接收签到通知）" name="email" id="email"/>
             <div id="info" style="display:none;color: red;font-size: 12px;margin-bottom: 10px;word-wrap:break-word;">error info</div>
-            <button id="login">提交</button>
+            <button type="button" id="login">提交</button>
         </form>
     </div>
     <div id="loading" class="loading" style="margin-top: -50px;display: none">
@@ -199,8 +212,10 @@
         <span></span>
         <span></span>
     </div>
+    <div id="allmap"></div>
 </div>
 <script src="js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=yxRvk9p5t0NawsafBGsNoEH6otd165la"></script>
 <script src="js/app.js"></script>
 <script type="text/javascript">
     function do_submit() {
@@ -305,16 +320,60 @@
         return true;
     }
 
-
+    // 显示错误信息
     function showErrInfo(info){
         $("#info").text(info);
-        $("#info").css("color","green");
+        $("#info").css("color","red");
         $("#info").show();
         //窗口振动
         $("#login_form").removeClass('shake_effect');
         setTimeout(function () {
             $("#login_form").addClass('shake_effect')
         }, 1);
+    }
+
+    //获取定位信息
+    function getLocation() {
+        $("#longitude").attr('placeholder','定位中...');
+        $("#latitude").attr('placeholder','定位中...');
+        $("#position").attr('placeholder','定位中...');
+        $("#getPos").text('定位中...')
+        $("#posInfo").hide();
+        var map = new BMap.Map("allmap");
+        var point = new BMap.Point(116.331398,39.897445);
+        map.centerAndZoom(point,12);
+        var geolocation = new BMap.Geolocation();
+        //创建地理编码器
+        var gc = new BMap.Geocoder();
+        geolocation.getCurrentPosition(function(r){
+            if(this.getStatus() == BMAP_STATUS_SUCCESS){
+                var mk = new BMap.Marker(r.point);
+                map.addOverlay(mk);
+                map.panTo(r.point);
+                // alert('您当前的经纬度：'+r.point.lng+','+r.point.lat);
+                $("#longitude").val(r.point.lng.toFixed(6));
+                $("#latitude").val(r.point.lat.toFixed(6));
+                gc.getLocation(r.point, function(rs){
+                    var addComp = rs.addressComponents;
+                    // alert(addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber);
+                    $("#position").val('中国' + addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber)
+                    $("#posInfo").text('定位成功，如果定位偏差过大，请手动修正到合适位置。建议使用今日校园历史签到里定位过的位置。');
+                    $("#posInfo").css("color","red");
+                    $("#posInfo").show();
+                });
+            }
+            else {
+                // alert('failed-'+this.getStatus());
+                alert("自动定位失败！")
+                $("#posInfo").text('地理位置获取失败，请开启GPS定位后重试或者手动填写，详情请查看推文。');
+                $("#posInfo").css("color","red");
+                $("#posInfo").show();
+                $("#getPos").text('重新定位')
+                $("#longitude").attr('placeholder','经度');
+                $("#latitude").attr('placeholder','纬度');
+                $("#position").attr('placeholder','地理位置');
+            }
+        });
     }
 
 </script>

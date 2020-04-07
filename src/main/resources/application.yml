@@ -5,7 +5,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     #    schema: classpath:db/schema-h2.sql
     #    data: classpath:db/data-h2.sql
-    url: jdbc:mysql://****:3306/weixin_mp?characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://***:3306/weixin_mp?characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: xxxx
     druid:
@@ -19,7 +19,11 @@ spring:
         login-password: druid
 
 server:
+  # 这个用作https端口
   port: 9800
+  #这个字段属于自定义的，用于http端口
+  custom:
+    httpPort: 9801
   ssl:
     key-store: classpath:3262598_starix.top.pfx
     key-store-password: Pr1ifVXd
