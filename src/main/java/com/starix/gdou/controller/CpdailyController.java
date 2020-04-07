@@ -37,7 +37,6 @@ public class CpdailyController {
             return CommonResult.validateFailed(allErrors.get(0).getDefaultMessage());
         }
         cpdailyUserService.saveUser(user);
-        new CpdailySignInAsyncTask().doSignIn(user);
         return CommonResult.success();
     }
 
