@@ -358,8 +358,9 @@
                     // alert(addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber);
                     $("#position").val('中国' + addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber)
                     $("#posInfo").text('定位成功，如果定位偏差过大，请手动修正到合适位置。建议使用今日校园历史签到里定位过的位置。');
-                    $("#posInfo").css("color","red");
+                    $("#posInfo").css("color","green");
                     $("#posInfo").show();
+                    $("#getPos").text('重新定位')
                 });
             }
             else {
