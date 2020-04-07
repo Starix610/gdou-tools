@@ -21,6 +21,7 @@
 <img src="https://github.com/Starix610/gdou-jw-tools/blob/master/readme_images/evaluation.jpg" alt="image" width="300px">
 <img src="https://github.com/Starix610/gdou-jw-tools/blob/master/readme_images/score-list.jpg" alt="image" width="300px">
 <img src="https://github.com/Starix610/gdou-jw-tools/blob/master/readme_images/exam-list.jpg" alt=" image"width="300px">
+<img src="https://github.com/Starix610/gdou-jw-tools/blob/master/readme_images/cpdaily-auto-sign-in.jpg" alt=" image"width="300px">
 </div>
 
 ### 功能已经集成到我的个人微信公众号上面：
