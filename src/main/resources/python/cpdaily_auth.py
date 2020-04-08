@@ -30,8 +30,6 @@ def do_auth(username, password):
         response = session.get(captcha_url, headers=headers)
         captcha = ocr.get_code(response.content)
         data = {
-            # "username": "201711621431",
-            # "password": "Gdou*201413",
             "username": username,
             "password": password,
             "captchaResponse": captcha,

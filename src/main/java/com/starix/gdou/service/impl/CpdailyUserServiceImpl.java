@@ -42,7 +42,7 @@ public class CpdailyUserServiceImpl implements CpdailyUserService {
         }
         boolean result = authentication(user.getUsername(), user.getPassword());
         if (!result){
-            throw new CustomException(CommonResult.failed("用户名或密码错误"));
+            throw new CustomException(CommonResult.failed("用户名或密码错误，请注意查看推文中关于账号密码的说明"));
         }
         user.setCreateTime(new Date());
         userRepository.save(user);
