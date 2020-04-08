@@ -21,8 +21,8 @@ public class SpiderServiceTest {
     @Test
     public void testLogin() throws Exception {
 
-        String xh = "201711621427";
-        String password = "shiwenjie2019";
+        String xh = "****";
+        String password = "****";
         spiderService.login(xh, password);
 
     }
