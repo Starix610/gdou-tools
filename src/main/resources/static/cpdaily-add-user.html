@@ -256,11 +256,13 @@
                     showErrInfo(data.message)
                 }
                 $("#loading").hide();
+                $("#login").text('提交')
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 $("#info").text("服务器异常");
                 $("#info").show();
                 $("#loading").hide();
+                $("#login").text('提交')
             }
 
         });
@@ -281,6 +283,7 @@
             if (!checkLonLat() || !checkEmail()){
                 return false;
             }
+            $("#login").text('正在提交...')
             do_submit();
             return false;
         })
