@@ -10,4 +10,7 @@ public interface CpdailyUserService {
 
     void saveUser(CpdailyUser user) throws Exception;
 
+    void deleteUser(String username, String password) throws Exception;
+
+    void updateUser(CpdailyUser user) throws Exception;
 }

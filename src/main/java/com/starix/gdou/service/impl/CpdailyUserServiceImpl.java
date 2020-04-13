@@ -6,9 +6,12 @@ import com.starix.gdou.repository.CpdailyUserRepository;
 import com.starix.gdou.response.CommonResult;
 import com.starix.gdou.service.CpdailyUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -34,6 +37,7 @@ public class CpdailyUserServiceImpl implements CpdailyUserService {
     private CpdailyUserRepository userRepository;
 
     @Override
+    @Transactional
     public void saveUser(CpdailyUser user) throws Exception {
         log.info("[{}]正在添加用户", user.getUsername());
         CpdailyUser cpdailyUser = userRepository.findByUsername(user.getUsername());
@@ -47,6 +51,40 @@ public class CpdailyUserServiceImpl implements CpdailyUserService {
         user.setCreateTime(new Date());
         userRepository.save(user);
         log.info("[{}]用户添加成功", user.getUsername());
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(String username, String password) throws Exception {
+        log.info("[{}]正在取消自动签到", username);
+        CpdailyUser cpdailyUser = userRepository.findByUsername(username);
+        if (cpdailyUser == null){
+            throw new CustomException(CommonResult.failed("用户记录不存在或已经取消自动签到"));
+        }
+        boolean result = authentication(username, password);
+        if (!result){
+            throw new CustomException(CommonResult.failed("用户名或密码错误"));
+        }
+        userRepository.deleteByUsername(username);
+        log.info("[{}]取消自动签到成功", username);
+    }
+
+    @Override
+    @Transactional
+    public void updateUser(CpdailyUser user) throws Exception {
+        log.info("[{}]正在更新签到信息", user.getUsername());
+        CpdailyUser cpdailyUser = userRepository.findByUsername(user.getUsername());
+        if (cpdailyUser == null){
+            throw new CustomException(CommonResult.failed("修改失败，该账号未提交过"));
+        }
+        boolean result = authentication(user.getUsername(), user.getPassword());
+        if (!result){
+            throw new CustomException(CommonResult.failed("用户名或密码错误"));
+        }
+        BeanUtils.copyProperties(user, cpdailyUser, "id", "createTime");
+        cpdailyUser.setUpdateTime(new Date());
+        userRepository.save(cpdailyUser);
+        log.info("[{}]签到信息更新成功", user.getUsername());
     }
 
     /**

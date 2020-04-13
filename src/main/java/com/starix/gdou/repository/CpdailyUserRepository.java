@@ -11,4 +11,6 @@ public interface CpdailyUserRepository extends JpaRepository<CpdailyUser, Intege
 
     CpdailyUser findByUsername(String username);
 
+    void deleteByUsername(String username);
+
 }
