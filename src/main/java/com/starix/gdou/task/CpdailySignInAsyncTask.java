@@ -55,12 +55,12 @@ public class CpdailySignInAsyncTask {
         } catch (IOException e) {
             e.printStackTrace();
             log.error("[{}]签到失败，Python签到脚本执行出错：{}", cpdailyUser.getUsername(), e.getMessage());
-            throw new CustomException(CommonResult.failed("Python签到脚本执行出错"));
+            return new AsyncResult<>("任务执行失败");
         }
         int status = process.waitFor();
         if (status != 0){
             log.error("[{}]签到失败，Python签到脚本执行出错，status:{}", cpdailyUser.getUsername(), status);
-            throw new CustomException(CommonResult.failed("Python签到脚本执行出错"));
+            return new AsyncResult<>("任务执行失败");
         }
         InputStream in = process.getInputStream();
         BufferedReader buffReader = new BufferedReader(new InputStreamReader(in, OUTPUT_ENCODING));
