@@ -46,15 +46,18 @@ def get_stu_sign_info():
                                  json={}, headers=headers)
     except requests.exceptions.SSLError as e:
         print('result-获取信息失败')
-        email_util.send_email(email, '签到失败', '签到失败，详细信息：获取信息失败')
+        email_util.send_email(email, '签到失败', '签到失败：获取信息失败')
         exit(0)
     json = response.json()
     if json['datas']['signedTasks']:
         print('result-今日已签到，不再重复提交签到')
-        email_util.send_email(email, '签到失败', '签到失败，详细信息：今日已签到，不再重复提交签到')
+        email_util.send_email(email, '签到失败', '签到失败：今日您已完成签到，不再重复提交签到')
         exit(0)
-    else:
+    elif json['datas']['unSignedTasks']:
         return json['datas']['unSignedTasks'][0]['signInstanceWid']
+    else:
+        email_util.send_email(email, '签到失败', '签到失败：未获取到签到信息')
+        exit(0)
 
 
 # DES加密
