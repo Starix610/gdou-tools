@@ -13,6 +13,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 /**
  * @author Tobu
@@ -53,11 +54,12 @@ public class CpdailySignInAsyncTask {
             process = Runtime.getRuntime().exec(cmd, null, new File(PYTHON_PATH_AUTH));
         } catch (IOException e) {
             e.printStackTrace();
-            log.error("Python签到脚本执行出错：{}", e.getMessage());
+            log.error("[{}]签到失败，Python签到脚本执行出错：{}", cpdailyUser.getUsername(), e.getMessage());
+            throw new CustomException(CommonResult.failed("Python签到脚本执行出错"));
         }
         int status = process.waitFor();
         if (status != 0){
-            log.error("Python签到脚本执行出错，status:{}", status);
+            log.error("[{}]签到失败，Python签到脚本执行出错，status:{}", cpdailyUser.getUsername(), status);
             throw new CustomException(CommonResult.failed("Python签到脚本执行出错"));
         }
         InputStream in = process.getInputStream();
