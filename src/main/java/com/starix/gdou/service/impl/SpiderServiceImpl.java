@@ -446,7 +446,7 @@ public class SpiderServiceImpl implements SpiderService {
             evaluatePost.setHeader(loginResult.getCookie());
             HttpResponse saveEvaluationResp = httpClient.execute(evaluatePost);
             String respHtml = EntityUtils.toString(saveEvaluationResp.getEntity(), Consts.UTF_8);
-            document = Jsoup.parse(respHtml);
+                document = Jsoup.parse(respHtml);
 
             //若出现直接包含在<script>标签内的alert语句的说明有错误信息，提交失败
             if (document.toString().contains("<script>alert") && !document.toString().contains("所有评价已完成")){

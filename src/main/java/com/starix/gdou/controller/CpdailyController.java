@@ -31,37 +31,43 @@ public class CpdailyController {
     //新增签到用户
     @PostMapping(value = "/cpdaily/addUser")
     public CommonResult addCpdailyUser(@RequestBody @Valid CpdailyUser user, BindingResult bindingResult) throws Exception {
-        if (bindingResult.hasErrors()){
-            List<ObjectError> allErrors = bindingResult.getAllErrors();
-            //多个校验错误只返回第一个错误信息给前端
-            log.info("用户参数校验错误:[{}]", allErrors.get(0).getDefaultMessage());
-            return CommonResult.validateFailed(allErrors.get(0).getDefaultMessage());
-        }
-        cpdailyUserService.saveUser(user);
-        return CommonResult.success();
+        // TODO: 2020-05-04 停止使用
+        return CommonResult.failed("自动签到服务已停用！");
+        // if (bindingResult.hasErrors()){
+        //     List<ObjectError> allErrors = bindingResult.getAllErrors();
+        //     //多个校验错误只返回第一个错误信息给前端
+        //     log.info("用户参数校验错误:[{}]", allErrors.get(0).getDefaultMessage());
+        //     return CommonResult.validateFailed(allErrors.get(0).getDefaultMessage());
+        // }
+        // cpdailyUserService.saveUser(user);
+        // return CommonResult.success();
     }
 
     //取消签到
     @PostMapping(value = "/cpdaily/delUser")
     public CommonResult delCpdailyUser(String username, String password) throws Exception {
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
-            return CommonResult.validateFailed();
-        }
-        cpdailyUserService.deleteUser(username, password);
-        return CommonResult.success();
+        // TODO: 2020-05-04 停止使用
+        return CommonResult.failed("自动签到服务已停用，无须手动取消！");
+        // if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
+        //     return CommonResult.validateFailed();
+        // }
+        // cpdailyUserService.deleteUser(username, password);
+        // return CommonResult.success();
     }
 
     //更新签到信息
     @PostMapping(value = "/cpdaily/updateUser")
     public CommonResult udpateCpdailyUser(@RequestBody @Valid CpdailyUser user, BindingResult bindingResult) throws Exception {
-        if (bindingResult.hasErrors()){
-            List<ObjectError> allErrors = bindingResult.getAllErrors();
-            //多个校验错误只返回第一个错误信息给前端
-            log.info("用户参数校验错误:[{}]", allErrors.get(0).getDefaultMessage());
-            return CommonResult.validateFailed(allErrors.get(0).getDefaultMessage());
-        }
-        cpdailyUserService.updateUser(user);
-        return CommonResult.success();
+        // TODO: 2020-05-04 停止使用
+        return CommonResult.failed("自动签到服务已停用！");
+        // if (bindingResult.hasErrors()){
+        //     List<ObjectError> allErrors = bindingResult.getAllErrors();
+        //     //多个校验错误只返回第一个错误信息给前端
+        //     log.info("用户参数校验错误:[{}]", allErrors.get(0).getDefaultMessage());
+        //     return CommonResult.validateFailed(allErrors.get(0).getDefaultMessage());
+        // }
+        // cpdailyUserService.updateUser(user);
+        // return CommonResult.success();
     }
 
 }
