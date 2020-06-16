@@ -17,16 +17,16 @@
 
 ### 预览：
 <div align="center">
-<img src="https://github.com/Starix610/gdou-jw-tools/blob/master/readme_images/score.jpg" alt="image" width="300px">
-<img src="https://github.com/Starix610/gdou-jw-tools/blob/master/readme_images/evaluation.jpg" alt="image" width="300px">
-<img src="https://github.com/Starix610/gdou-jw-tools/blob/master/readme_images/score-list.jpg" alt="image" width="300px">
-<img src="https://github.com/Starix610/gdou-jw-tools/blob/master/readme_images/exam-list.jpg" alt=" image"width="300px">
-<img src="https://github.com/Starix610/gdou-jw-tools/blob/master/readme_images/cpdaily-auto-sign-in.jpg" alt=" image"width="300px">
+<img src="https://swj-bucke.oss-cn-shenzhen.aliyuncs.com/github-images/gdou-tools/score.jpg" alt="image" width="300px">
+<img src="https://swj-bucke.oss-cn-shenzhen.aliyuncs.com/github-images/gdou-tools/evaluation.jpg" alt="image" width="300px">
+<img src="https://swj-bucke.oss-cn-shenzhen.aliyuncs.com/github-images/gdou-tools/score-list.jpg" alt="image" width="300px">
+<img src="https://swj-bucke.oss-cn-shenzhen.aliyuncs.com/github-images/gdou-tools/exam-list.jpg" alt=" image"width="300px">
+<img src="https://swj-bucke.oss-cn-shenzhen.aliyuncs.com/github-images/gdou-tools/cpdaily-auto-sign-in.jpg" alt=" image"width="300px">
 </div>
 
 ### 功能已经集成到我的个人微信公众号上面：
 <div align="center">
-<img src="https://github.com/Starix610/gdou-jw-tools/blob/master/readme_images/qrcode.jpg" alt="image" width="200px">
+<img src="https://swj-bucke.oss-cn-shenzhen.aliyuncs.com/github-images/gdou-tools/qrcode.jpg" alt="image" width="200px">
 </div>
 
 
