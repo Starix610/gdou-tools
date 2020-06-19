@@ -99,17 +99,20 @@
                         }
                         $("#tableList").append(html);
                     }else {
+                        // 没有数据提示
                         $("#info").show();
-                        // alert("没有数据");
                     }
                 } else {
                     alert(data.message);
+                    $("#info").html(data.message);
+                    $("#info").show();
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 alert("服务器异常");
+                $("#info").html("服务器异常");
+                $("#info").show();
             }
-
         });
     }
 
@@ -128,7 +131,14 @@
                     }
                 } else {
                     alert(data.message);
+                    window.location.href = BASE_URL + "/exam.html"
+                    return false;
                 }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("服务器异常");
+                window.location.href = BASE_URL + "/exam.html"
+                return false;
             }
         })
     }

@@ -255,13 +255,7 @@
         
         $("#evaluate").click(function () {
             if ($("#xh").val() == '' || $("#password").val() == '' || $('#content').val() == ''){
-                $("#info").text("信息填写不完整");
-                $("#info").show();
-                //窗口振动
-                $("#login_form").removeClass('shake_effect');
-                setTimeout(function () {
-                    $("#login_form").addClass('shake_effect')
-                }, 1);
+                showErrInfo("信息填写不完整");
                 return false;
             }
             //测试中文字符的正则表达式
@@ -269,13 +263,7 @@
             //中文字数小于5个禁止提交
             var content = $('#content').val();
                 if (!re.test(content) || content.match(re).length <= 5 || content.match(re).length > 50) {
-                $("#info").text("必须包含5字以上50字以下的评价内容");
-                $("#info").show();
-                //窗口振动
-                $("#login_form").removeClass('shake_effect');
-                setTimeout(function () {
-                    $("#login_form").addClass('shake_effect')
-                }, 1);
+                showErrInfo("必须包含5字以上50字以下的评价内容");
                 return false;
             }
 
@@ -291,6 +279,18 @@
             }, 'slow');
         });
     })
+
+    // 显示错误信息
+    function showErrInfo(info){
+        $("#info").text(info);
+        $("#info").css("color","red");
+        $("#info").show();
+        //窗口振动
+        $("#login_form").removeClass('shake_effect');
+        setTimeout(function () {
+            $("#login_form").addClass('shake_effect')
+        }, 1);
+    }
 </script>
 </body>
 </html>

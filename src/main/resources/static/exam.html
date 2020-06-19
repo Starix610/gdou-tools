@@ -201,14 +201,7 @@
                     window.location.href = BASE_URL + "/exam-list.html"
                 }else {
                     // alert(data.message);
-                    $("#info").text(data.message);
-                    $("#info").show();
-
-                    //窗口振动
-                    $("#login_form").removeClass('shake_effect');
-                    setTimeout(function () {
-                        $("#login_form").addClass('shake_effect')
-                    }, 1);
+                    showErrInfo(data.message)
                 }
                 $("#loading").hide();
             },
@@ -238,12 +231,9 @@
                     window.location.href = BASE_URL + "/exam-list.html"
                 }else {
                     alert(data.message);
-
-                    //窗口振动
-                    $("#login_form").removeClass('shake_effect');
-                    setTimeout(function () {
-                        $("#login_form").addClass('shake_effect')
-                    }, 1);
+                    $("#title").show();
+                    $("#login_form").show();
+                    showErrInfo(data.message);
                 }
                 $("#loading").hide();
             },
@@ -264,7 +254,7 @@
             $("#loading").show();
             do_auto_login();
         }else {
-            //显示登录登录框
+            //显示登录框
             $("#title").show();
             $("#login_form").show();
         }
@@ -272,13 +262,7 @@
 
         $("#login").click(function () {
             if ($("#xh").val() == '' || $("#password").val() == ''){
-                $("#info").text("信息填写不完整");
-                $("#info").show();
-                //窗口振动
-                $("#login_form").removeClass('shake_effect');
-                setTimeout(function () {
-                    $("#login_form").addClass('shake_effect')
-                }, 1);
+                showErrInfo("信息填写不完整")
                 return false;
             }
             do_login();
@@ -292,6 +276,18 @@
             }, 'slow');
         });
     })
+
+    // 显示错误信息
+    function showErrInfo(info){
+        $("#info").text(info);
+        $("#info").css("color","red");
+        $("#info").show();
+        //窗口振动
+        $("#login_form").removeClass('shake_effect');
+        setTimeout(function () {
+            $("#login_form").addClass('shake_effect')
+        }, 1);
+    }
 </script>
 </body>
 </html>

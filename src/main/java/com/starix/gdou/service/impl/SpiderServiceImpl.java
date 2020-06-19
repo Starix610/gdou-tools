@@ -136,12 +136,19 @@ public class SpiderServiceImpl implements SpiderService {
                 errInfo = m.group(1);
             }
             if (errInfo == null){
-                errInfo = "系统异常，请稍后重试";
+                log.error("学号[{}]登录失败，原因:{}", xh, "系统异常, errInfo为空");
+                throw new CustomException(CommonResult.failed("系统异常，请稍后重试"));
+            }else if (errInfo.contains("验证码不正确")){
+                // 验证码不正确则递归重试至识别正确
+                log.info("学号[{}]登录失败，验证码识别错误，正在重试", xh);
+                return login(xh, password);
+            }else {
+                log.error("学号[{}]登录失败，原因:{}", xh, errInfo);
+                throw new CustomException(CommonResult.failed(errInfo));
             }
-            log.error("学号[{}]登录失败，原因:{}", xh, errInfo);
-            throw new CustomException(CommonResult.failed(errInfo));
         }
     }
+
 
     @Override
     public List<ScoreVO> getScore(LoginResult loginResult, String year, String semester) throws IOException {
@@ -319,7 +326,13 @@ public class SpiderServiceImpl implements SpiderService {
         Document document = Jsoup.parse(loginResult.getHomePageHtml());
 
         //查成绩页面URL
-        String scoreURL = document.getElementsByAttributeValue("onclick", "GetMc('学生考试查询');").get(0).attr("href");
+        String scoreURL;
+        try {
+            scoreURL = document.getElementsByAttributeValue("onclick", "GetMc('学生考试查询');").get(0).attr("href");
+        } catch (Exception e){
+            // 有些情况下教务系统没有查成绩的入口链接，抛异常处理
+            throw new CustomException(CommonResult.failed("教务系统暂时不能查询考试信息！"));
+        }
 
         HttpPost scorePagePost = new HttpPost(BASE_URL + "/" + scoreURL);
         BasicHeader referer = new BasicHeader("Referer", loginResult.getRefererURL());
@@ -354,19 +367,20 @@ public class SpiderServiceImpl implements SpiderService {
 
         Document document = Jsoup.parse(loginResult.getHomePageHtml());
 
-        Elements lis = document.getElementById("headDiv").getElementsByAttributeValue("class", "nav").get(0)
-                .getElementsByAttributeValue("class", "top").get(3).getElementsByTag("li");
+        Elements navLis = document.getElementById("headDiv").getElementsByAttributeValue("class", "nav").get(0)
+                .getElementsByAttributeValue("class", "top");
+        Elements evaluationLis = findEvaluationLis(navLis);
 
         HttpClient httpClient = HttpClientBuilder.create().build();
 
-        if (lis.size() <= 1){
-            throw new CustomException(CommonResult.fail(300, "你已经完成评教啦！"));
+        if (evaluationLis.size() <= 1){
+            throw new CustomException(CommonResult.fail(300, "暂时没有需要执行的评教或者你已经完成了评教，请到官网查看"));
         }
 
-        for (int k = 1; k < lis.size(); k++) {
+        for (int k = 1; k < evaluationLis.size(); k++) {
             //进入评教页面
-            String evaluationURL = lis.get(k).getElementsByTag("a").get(0).attr("href");
-            String kcName = lis.get(k).getElementsByTag("a").get(0).text();
+            String evaluationURL = evaluationLis.get(k).getElementsByTag("a").get(0).attr("href");
+            String kcName = evaluationLis.get(k).getElementsByTag("a").get(0).text();
             HttpGet examPageGet = new HttpGet(BASE_URL + "/" + evaluationURL);
             BasicHeader referer = new BasicHeader("Referer", loginResult.getRefererURL());
             examPageGet.setHeader(loginResult.getCookie());
@@ -383,8 +397,15 @@ public class SpiderServiceImpl implements SpiderService {
             String viewState = document.getElementById("Form1").getElementsByAttributeValue("name", "__VIEWSTATE").get(0).val();
 
             //处理某些特殊异常情况(已完成评教但是lis.size()>1)
-            if (document.getElementById("pjkc").children().size() == 0){
-                throw new CustomException(CommonResult.fail(300, "你已经完成评教！"));
+            try {
+                if (document.getElementById("pjkc").children().size() == 0){
+                    throw new CustomException(CommonResult.fail(300, "你已经完成评教！"));
+                }
+            } catch (Exception e){
+                // TODO: 2020-06-20 临时代码，评教异常排查
+                log.error(">>>>>>>>>>>>评教出现异常: {}", e.getMessage());
+                System.out.println(evaluationLis.html());
+                throw e;
             }
 
             //pjkc参数（年份和课程号）
@@ -402,17 +423,15 @@ public class SpiderServiceImpl implements SpiderService {
                 paramNames2 = document.getElementById("dgPjc").getElementsByTag("select").eachAttr("name");
             }
 
-
             //评价内容
             String pjxx = content;
-
 
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("__VIEWSTATE", viewState));
             params.add(new BasicNameValuePair("pjxx", pjxx));
 
             //教师评价等级参数列表
-            ArrayList<BasicNameValuePair> paramPairs = new ArrayList<>();
+            List<NameValuePair> paramPairs = new ArrayList<>();
             //取一个随机索引，使评价等级选项列表中随机来一个B（评价等级全相同会被禁止提交）
             int randomIndex = (int) (Math.random() * paramNames1.size());
             for (int i = 0; i < paramNames1.size(); i++) {
@@ -461,7 +480,7 @@ public class SpiderServiceImpl implements SpiderService {
 
         if (mode == 0){
             //执行最终提交
-            evalutionSubmit(loginResult, lis, document);
+            evalutionSubmit(loginResult, evaluationLis, document);
         }
 
     }
@@ -534,6 +553,16 @@ public class SpiderServiceImpl implements SpiderService {
                 throw new CustomException(CommonResult.fail(300, "评价提交失败，请稍后重试"));
             }
         }
+    }
+
+
+    private Elements findEvaluationLis(Elements navLis) {
+        for (Element navLi : navLis) {
+            if (navLi.text().contains("教学质量评价")){
+                return navLi.getElementsByTag("li");
+            }
+        }
+        throw new CustomException(CommonResult.failed("教务系统暂时未开放教学评价！"));
     }
 
 }
