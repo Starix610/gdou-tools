@@ -25,7 +25,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @Slf4j
-public class MainController {
+public class GdouJWController {
 
     @Autowired
     private SpiderService spiderService;
@@ -67,6 +67,8 @@ public class MainController {
         }
 
         log.info("[{}]正在绑定学号",xh);
+
+        // 绑定前先验证账号密码是否正确
         spiderService.login(xh, password);
 
         schoolInfoQueryService.bind(openid, xh, password);
@@ -107,7 +109,7 @@ public class MainController {
             return CommonResult.failed(ResultCode.UNAUTHORIZED,"你还没有登录或者登录信息已经过期");
         }
 
-        log.info("[{}]正在查询考试",loginResult.getXh());
+        log.info("[{}]正在查询考试", loginResult.getXh());
         List<ExamVO> scoreList = spiderService.getExam(loginResult, year, semester);
 
         return CommonResult.success(scoreList);
@@ -146,9 +148,7 @@ public class MainController {
         LoginResult loginResult = spiderService.login(xh, password);
         log.info("[{}]正在自动评教，参数-->[password]:{},[content]:{},[mode]:{}",xh,password,content,mode);
         spiderService.autoEvaluate(loginResult,content, mode);
-
         return CommonResult.success();
     }
-
 
 }

@@ -201,14 +201,7 @@
                     window.location.href = BASE_URL + "/score-list.html"
                 }else {
                     // alert(data.message);
-                    $("#info").text(data.message);
-                    $("#info").show();
-
-                    //窗口振动
-                    $("#login_form").removeClass('shake_effect');
-                    setTimeout(function () {
-                        $("#login_form").addClass('shake_effect')
-                    }, 1);
+                    showErrInfo(data.message);
                 }
                 $("#loading").hide();
             },
@@ -227,7 +220,7 @@
 
         $.ajax({
             type: "POST",
-                contentType: "application/x-www-form-urlencoded",
+            contentType: "application/x-www-form-urlencoded",
             url: BASE_URL + "/autoLogin",
             data: param,
             processData: false,
@@ -238,12 +231,9 @@
                     window.location.href = BASE_URL + "/score-list.html"
                 }else {
                     alert(data.message);
-
-                    //窗口振动
-                    $("#login_form").removeClass('shake_effect');
-                    setTimeout(function () {
-                        $("#login_form").addClass('shake_effect')
-                    }, 1);
+                    $("#title").show();
+                    $("#login_form").show();
+                    showErrInfo(data.message);
                 }
                 $("#loading").hide();
             },
@@ -254,7 +244,6 @@
 
         });
     }
-
 
     $(function () {
 
@@ -272,13 +261,7 @@
 
         $("#login").click(function () {
             if ($("#xh").val() == '' || $("#password").val() == ''){
-                $("#info").text("信息填写不完整");
-                $("#info").show();
-                //窗口振动
-                $("#login_form").removeClass('shake_effect');
-                setTimeout(function () {
-                    $("#login_form").addClass('shake_effect')
-                }, 1);
+                showErrInfo("信息填写不完整")
                 return false;
             }
             do_login();
@@ -292,6 +275,18 @@
             }, 'slow');
         });
     })
+
+    // 显示错误信息
+    function showErrInfo(info){
+        $("#info").text(info);
+        $("#info").css("color","red");
+        $("#info").show();
+        //窗口振动
+        $("#login_form").removeClass('shake_effect');
+        setTimeout(function () {
+            $("#login_form").addClass('shake_effect')
+        }, 1);
+    }
 </script>
 </body>
 </html>

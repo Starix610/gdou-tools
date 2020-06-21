@@ -170,20 +170,21 @@
 <h2 style="color: white;text-align: center;margin-top: 75px;">自动评教</h2>
 <div id="wrapper" class="login-page">
     <div id="login_form" class="form">
-        <form id="loginForm" class="login-form">
-            <input type="text" placeholder="学号" name="xh" id="xh"/>
-            <input type="password" placeholder="密码" name="password" id="password"/>
-            <input type="text" placeholder="填写对老师的评价或建议，5字以上" name="content" id="content"/>
-            <div style="margin-bottom: 20px;font-size: 14px;text-align: left">
-                模式：
-                <select id="mode" name="mode">
-                    <option value="0">全程自动，啥都不用做</option>
-                    <option value="1">评价完成后，到官网手动提交</option>
-                </select>
-            </div>
-            <div id="info" style="display: none;color: red;font-size: 12px;margin-bottom: 15px;word-wrap:break-word;">error info</div>
-            <button id="evaluate">一键评教</button>
-        </form>
+        <p style="color: red;font-size: 15px">教务系统平台已经改版迁移，因此旧的自动评教功能已不再适用。新的自动评教功能正在开发中，敬请等待。</p>
+        <!--<form id="loginForm" class="login-form">-->
+            <!--<input type="text" placeholder="学号" name="xh" id="xh"/>-->
+            <!--<input type="password" placeholder="密码" name="password" id="password"/>-->
+            <!--<input type="text" placeholder="填写对老师的评价或建议，5字以上" name="content" id="content"/>-->
+            <!--<div style="margin-bottom: 20px;font-size: 14px;text-align: left">-->
+                <!--模式：-->
+                <!--<select id="mode" name="mode">-->
+                    <!--<option value="0">全程自动，啥都不用做</option>-->
+                    <!--<option value="1">评价完成后，到官网手动提交</option>-->
+                <!--</select>-->
+            <!--</div>-->
+            <!--<div id="info" style="display: none;color: red;font-size: 12px;margin-bottom: 15px;word-wrap:break-word;">error info</div>-->
+            <!--<button id="evaluate">一键评教</button>-->
+        <!--</form>-->
     </div>
 </div>
 
@@ -255,13 +256,7 @@
         
         $("#evaluate").click(function () {
             if ($("#xh").val() == '' || $("#password").val() == '' || $('#content').val() == ''){
-                $("#info").text("信息填写不完整");
-                $("#info").show();
-                //窗口振动
-                $("#login_form").removeClass('shake_effect');
-                setTimeout(function () {
-                    $("#login_form").addClass('shake_effect')
-                }, 1);
+                showErrInfo("信息填写不完整");
                 return false;
             }
             //测试中文字符的正则表达式
@@ -269,13 +264,7 @@
             //中文字数小于5个禁止提交
             var content = $('#content').val();
                 if (!re.test(content) || content.match(re).length <= 5 || content.match(re).length > 50) {
-                $("#info").text("必须包含5字以上50字以下的评价内容");
-                $("#info").show();
-                //窗口振动
-                $("#login_form").removeClass('shake_effect');
-                setTimeout(function () {
-                    $("#login_form").addClass('shake_effect')
-                }, 1);
+                showErrInfo("必须包含5字以上50字以下的评价内容");
                 return false;
             }
 
@@ -291,6 +280,18 @@
             }, 'slow');
         });
     })
+
+    // 显示错误信息
+    function showErrInfo(info){
+        $("#info").text(info);
+        $("#info").css("color","red");
+        $("#info").show();
+        //窗口振动
+        $("#login_form").removeClass('shake_effect');
+        setTimeout(function () {
+            $("#login_form").addClass('shake_effect')
+        }, 1);
+    }
 </script>
 </body>
 </html>
