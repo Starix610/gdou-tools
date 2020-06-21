@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  */
 @Service
 @Slf4j
-public class SpiderServiceImpl implements SpiderService {
+public class GdouJWServiceImpl implements SpiderService {
 
     //python脚本绝对路径
     @Value("${python.path}")
@@ -325,12 +325,12 @@ public class SpiderServiceImpl implements SpiderService {
 
         Document document = Jsoup.parse(loginResult.getHomePageHtml());
 
-        //查成绩页面URL
+        //查考试页面URL
         String scoreURL;
         try {
             scoreURL = document.getElementsByAttributeValue("onclick", "GetMc('学生考试查询');").get(0).attr("href");
         } catch (Exception e){
-            // 有些情况下教务系统没有查成绩的入口链接，抛异常处理
+            // 有些情况下教务系统没有查考试的入口链接，抛异常处理
             throw new CustomException(CommonResult.failed("教务系统暂时不能查询考试信息！"));
         }
 

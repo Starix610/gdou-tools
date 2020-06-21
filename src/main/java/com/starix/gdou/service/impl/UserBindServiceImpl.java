@@ -15,7 +15,7 @@ import java.util.Date;
  * @date 2019-11-23 16:43
  */
 @Service
-public class SchoolInfoQueryServiceImpl implements SchoolInfoQueryService {
+public class UserBindServiceImpl implements SchoolInfoQueryService {
 
     @Autowired
     private StudentRepository studentRepository;
