@@ -25,7 +25,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @Slf4j
-public class MainController {
+public class GdouJWController {
 
     @Autowired
     private SpiderService spiderService;
