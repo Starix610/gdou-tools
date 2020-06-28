@@ -3,8 +3,8 @@ package com.starix.gdou.controller;
 import com.starix.gdou.pojo.LoginResult;
 import com.starix.gdou.response.CommonResult;
 import com.starix.gdou.response.ResultCode;
-import com.starix.gdou.service.SchoolInfoQueryService;
-import com.starix.gdou.service.SpiderService;
+import com.starix.gdou.service.UserBindService;
+import com.starix.gdou.service.GdouJWService;
 import com.starix.gdou.vo.ExamVO;
 import com.starix.gdou.vo.ScoreVO;
 import lombok.extern.slf4j.Slf4j;
@@ -28,16 +28,16 @@ import java.util.List;
 public class GdouJWController {
 
     @Autowired
-    private SpiderService spiderService;
+    private GdouJWService gdouJWService;
     @Autowired
-    private SchoolInfoQueryService schoolInfoQueryService;
+    private UserBindService userBindService;
 
     @PostMapping("/login")
     public CommonResult doLogin(String xh, String password, HttpSession httpSession) throws Exception {
         if (StringUtils.isEmpty(xh) || StringUtils.isEmpty(password)){
             return CommonResult.failed(ResultCode.VALIDATE_FAILED);
         }
-        LoginResult loginResult = spiderService.login(xh, password);
+        LoginResult loginResult = gdouJWService.login(xh, password);
 
         httpSession.setAttribute("studentLoginInfo", loginResult);
 
@@ -51,7 +51,7 @@ public class GdouJWController {
             return CommonResult.failed(ResultCode.VALIDATE_FAILED);
         }
 
-        LoginResult loginResult = spiderService.loginByOpenid(openid);
+        LoginResult loginResult = gdouJWService.loginByOpenid(openid);
 
         httpSession.setAttribute("studentLoginInfo", loginResult);
 
@@ -69,9 +69,9 @@ public class GdouJWController {
         log.info("[{}]正在绑定学号",xh);
 
         // 绑定前先验证账号密码是否正确
-        spiderService.login(xh, password);
+        gdouJWService.login(xh, password);
 
-        schoolInfoQueryService.bind(openid, xh, password);
+        userBindService.bind(openid, xh, password);
 
         return CommonResult.success();
     }
@@ -90,7 +90,7 @@ public class GdouJWController {
         }
 
         log.info("[{}]正在查询成绩",loginResult.getXh());
-        List<ScoreVO> scoreList = spiderService.getScore(loginResult, year, semester);
+        List<ScoreVO> scoreList = gdouJWService.getScore(loginResult, year, semester);
 
         return CommonResult.success(scoreList);
     }
@@ -110,7 +110,7 @@ public class GdouJWController {
         }
 
         log.info("[{}]正在查询考试", loginResult.getXh());
-        List<ExamVO> scoreList = spiderService.getExam(loginResult, year, semester);
+        List<ExamVO> scoreList = gdouJWService.getExam(loginResult, year, semester);
 
         return CommonResult.success(scoreList);
     }
@@ -125,7 +125,7 @@ public class GdouJWController {
         if (loginResult == null){
             return CommonResult.failed(ResultCode.UNAUTHORIZED,"你还没有登录或者登录信息已经过期");
         }
-        List<String> yearOptionsList = spiderService.getSocreYearOptionsList(loginResult);
+        List<String> yearOptionsList = gdouJWService.getSocreYearOptionsList(loginResult);
         return CommonResult.success(yearOptionsList);
     }
 
@@ -137,7 +137,7 @@ public class GdouJWController {
         if (loginResult == null){
             return CommonResult.failed(ResultCode.UNAUTHORIZED,"你还没有登录或者登录信息已经过期");
         }
-        List<String> yearOptionsList = spiderService.getExamYearOptionsList(loginResult);
+        List<String> yearOptionsList = gdouJWService.getExamYearOptionsList(loginResult);
         return CommonResult.success(yearOptionsList);
     }
 
@@ -145,9 +145,9 @@ public class GdouJWController {
     //自动评教
     @PostMapping("/autoEvaluate")
     public CommonResult doAutoEval(String xh, String password, String content, Integer mode) throws Exception {
-        LoginResult loginResult = spiderService.login(xh, password);
+        LoginResult loginResult = gdouJWService.login(xh, password);
         log.info("[{}]正在自动评教，参数-->[password]:{},[content]:{},[mode]:{}",xh,password,content,mode);
-        spiderService.autoEvaluate(loginResult,content, mode);
+        gdouJWService.autoEvaluate(loginResult,content, mode);
         return CommonResult.success();
     }
 

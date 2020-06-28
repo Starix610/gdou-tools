@@ -4,7 +4,7 @@ package com.starix.gdou.service;
  * @author Tobu
  * @date 2019-11-23 16:43
  */
-public interface SchoolInfoQueryService {
+public interface UserBindService {
 
     /**
      * 根据openid判断当前用户是否已经绑定过学号

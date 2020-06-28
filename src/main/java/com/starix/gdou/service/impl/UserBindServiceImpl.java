@@ -4,7 +4,7 @@ import com.starix.gdou.entity.Student;
 import com.starix.gdou.exception.CustomException;
 import com.starix.gdou.repository.StudentRepository;
 import com.starix.gdou.response.CommonResult;
-import com.starix.gdou.service.SchoolInfoQueryService;
+import com.starix.gdou.service.UserBindService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import java.util.Date;
  * @date 2019-11-23 16:43
  */
 @Service
-public class UserBindServiceImpl implements SchoolInfoQueryService {
+public class UserBindServiceImpl implements UserBindService {
 
     @Autowired
     private StudentRepository studentRepository;

@@ -11,7 +11,7 @@ import java.util.List;
  * @author Tobu
  * @date 2019-11-20 20:05
  */
-public interface SpiderService {
+public interface GdouJWService {
 
 
     /**

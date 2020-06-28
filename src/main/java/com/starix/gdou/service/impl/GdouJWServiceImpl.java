@@ -5,7 +5,7 @@ import com.starix.gdou.exception.CustomException;
 import com.starix.gdou.pojo.LoginResult;
 import com.starix.gdou.repository.StudentRepository;
 import com.starix.gdou.response.CommonResult;
-import com.starix.gdou.service.SpiderService;
+import com.starix.gdou.service.GdouJWService;
 import com.starix.gdou.vo.ExamVO;
 import com.starix.gdou.vo.ScoreVO;
 import lombok.extern.slf4j.Slf4j;
@@ -40,12 +40,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * 旧版教务系统服务service实现类
  * @author Tobu
  * @date 2019-11-20 20:05
  */
 @Service
 @Slf4j
-public class GdouJWServiceImpl implements SpiderService {
+public class GdouJWServiceImpl implements GdouJWService {
 
     //python脚本绝对路径
     @Value("${python.path}")

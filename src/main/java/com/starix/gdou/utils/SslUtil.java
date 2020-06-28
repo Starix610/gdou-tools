@@ -10,7 +10,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-public class SslUtils {
+public class SslUtil {
     private static void trustAllHttpsCertificates() throws Exception {
     TrustManager[] trustAllCerts = new TrustManager[1];
     TrustManager tm = new miTM();
