@@ -1,6 +1,5 @@
 package com.starix.gdou.utils;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;

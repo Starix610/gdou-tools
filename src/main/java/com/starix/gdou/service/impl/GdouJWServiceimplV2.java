@@ -1,6 +1,6 @@
 package com.starix.gdou.service.impl;
 
-import com.starix.gdou.pojo.LoginResult;
+import com.starix.gdou.dto.LoginResult;
 import com.starix.gdou.service.GdouJWService;
 import com.starix.gdou.vo.ExamVO;
 import com.starix.gdou.vo.ScoreVO;

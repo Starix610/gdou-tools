@@ -1,29 +1,28 @@
 package com.starix.gdou.controller;
 
-import com.starix.gdou.pojo.LoginResult;
+import com.starix.gdou.dto.LoginResult;
 import com.starix.gdou.response.CommonResult;
 import com.starix.gdou.response.ResultCode;
-import com.starix.gdou.service.UserBindService;
 import com.starix.gdou.service.GdouJWService;
+import com.starix.gdou.service.UserBindService;
 import com.starix.gdou.vo.ExamVO;
 import com.starix.gdou.vo.ScoreVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
+ * v1版本controller
  * @author Tobu
  * @date 2019-11-18 18:56
  */
-@RestController
-@CrossOrigin
+//@RestController
+//@CrossOrigin
 @Slf4j
 public class GdouJWController {
 

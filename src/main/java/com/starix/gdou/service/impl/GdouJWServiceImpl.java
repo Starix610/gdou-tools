@@ -2,7 +2,7 @@ package com.starix.gdou.service.impl;
 
 import com.starix.gdou.entity.Student;
 import com.starix.gdou.exception.CustomException;
-import com.starix.gdou.pojo.LoginResult;
+import com.starix.gdou.dto.LoginResult;
 import com.starix.gdou.repository.StudentRepository;
 import com.starix.gdou.response.CommonResult;
 import com.starix.gdou.service.GdouJWService;
