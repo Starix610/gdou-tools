@@ -1,9 +1,12 @@
 package com.starix.gdou.service;
 
+import com.starix.gdou.dto.LoginResultV2;
 import com.starix.gdou.dto.request.ExamQueryRquestDTO;
+import com.starix.gdou.dto.request.ScoreQueryRquestDTO;
 import com.starix.gdou.dto.response.ExamQueryResponseDTO;
 import com.starix.gdou.dto.response.ScoreQueryResponseDTO;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -22,7 +25,7 @@ public interface GdouJWServiceV2 {
      * @param password 密码
      * @return
      */
-    String login(String useranme, String password);
+    LoginResultV2 login(String useranme, String password) throws Exception;
 
 
     /**
@@ -30,14 +33,14 @@ public interface GdouJWServiceV2 {
      * @param openid
      * @return
      */
-    String loginByOpenid(String openid);
+    LoginResultV2 loginByOpenid(String openid);
 
     /**
      * 查询成绩信息
-     * @param scoreQueryResponseDTO
+     * @param scoreQueryRquestDTO
      * @return
      */
-    ScoreQueryResponseDTO queryScore(ScoreQueryResponseDTO scoreQueryResponseDTO);
+    ScoreQueryResponseDTO queryScore(ScoreQueryRquestDTO scoreQueryRquestDTO);
 
     /**
      * 查询考试信息

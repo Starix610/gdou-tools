@@ -1,6 +1,8 @@
 package com.starix.gdou.controller;
 
 import com.starix.gdou.dto.LoginResult;
+import com.starix.gdou.dto.LoginResultV2;
+import com.starix.gdou.dto.request.ExamQueryRquestDTO;
 import com.starix.gdou.dto.request.ScoreQueryRquestDTO;
 import com.starix.gdou.dto.response.ScoreQueryResponseDTO;
 import com.starix.gdou.response.CommonResult;
@@ -37,13 +39,19 @@ public class GdouJWControllerV2 {
     @Autowired
     private UserBindService userBindService;
 
+    @GetMapping("/test")
+    public CommonResult test() throws Exception {
+        gdouJWService.login(null, null);
+        return CommonResult.success();
+    }
+
     @PostMapping("/login")
     public CommonResult doLogin(String username, String password, HttpSession httpSession) throws Exception {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
             return CommonResult.failed(ResultCode.VALIDATE_FAILED);
         }
-        String cookie = gdouJWService.login(username, password);
-        httpSession.setAttribute("jw_cookie", cookie);
+        LoginResultV2 loginResult = gdouJWService.login(username, password);
+        httpSession.setAttribute("jw_cookie", loginResult);
         return CommonResult.success();
     }
 
@@ -53,22 +61,22 @@ public class GdouJWControllerV2 {
         if (StringUtils.isEmpty(openid)){
             return CommonResult.failed(ResultCode.VALIDATE_FAILED);
         }
-        String cookie = gdouJWService.loginByOpenid(openid);
-        httpSession.setAttribute("jw_cookie", cookie);
+        LoginResultV2 loginResult = gdouJWService.loginByOpenid(openid);
+        httpSession.setAttribute("jw_cookie", loginResult);
         return CommonResult.success();
     }
 
 
 
     @PostMapping("/bind")
-    public CommonResult doBind(String openid, String xh, String password) throws Exception {
-        if (StringUtils.isEmpty(openid) || StringUtils.isEmpty(xh) || StringUtils.isEmpty(password)){
+    public CommonResult doBind(String openid, String username, String password) throws Exception {
+        if (StringUtils.isEmpty(openid) || StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
             return CommonResult.failed(ResultCode.VALIDATE_FAILED);
         }
-        log.info("[{}]正在绑定学号",xh);
+        log.info("[{}]正在绑定学号",username);
         // 绑定前先验证账号密码是否正确
-        gdouJWService.login(xh, password);
-        userBindService.bind(openid, xh, password);
+        gdouJWService.login(username, password);
+        userBindService.bind(openid, username, password);
         return CommonResult.success();
     }
 
@@ -77,15 +85,18 @@ public class GdouJWControllerV2 {
         if (StringUtils.isEmpty(year) || StringUtils.isEmpty(semester)){
             return CommonResult.failed(ResultCode.VALIDATE_FAILED);
         }
-        String jwCookie = httpSession.getAttribute("jw_cookie").toString();
-        if (StringUtils.isEmpty(jwCookie)){
+        LoginResultV2 loginResult = (LoginResultV2) httpSession.getAttribute("jw_cookie");
+        if (loginResult == null){
             return CommonResult.failed(ResultCode.UNAUTHORIZED,"你还没有登录或者登录信息已经过期");
         }
-        log.info("[{}]正在查询成绩",loginResult.getXh());
-        ScoreQueryRquestDTO.builder().cookie();
-        List<ScoreVO> scoreList = gdouJWService.queryScore(loginResult, year, semester);
-
-        return CommonResult.success(scoreList);
+        log.info("[{}]正在查询成绩",loginResult.getUsername());
+        ScoreQueryRquestDTO scoreQueryRquestDTO = ScoreQueryRquestDTO.builder()
+                .cookie(loginResult.getCookie())
+                .year(year)
+                .semester(semester)
+                .build();
+        gdouJWService.queryScore(scoreQueryRquestDTO);
+        return CommonResult.success();
     }
 
 
@@ -95,17 +106,18 @@ public class GdouJWControllerV2 {
         if (StringUtils.isEmpty(year) || StringUtils.isEmpty(semester)){
             return CommonResult.failed(ResultCode.VALIDATE_FAILED);
         }
-
-        LoginResult loginResult = (LoginResult) httpSession.getAttribute("studentLoginInfo");
-
+        LoginResultV2 loginResult = (LoginResultV2) httpSession.getAttribute("jw_cookie");
         if (loginResult == null){
             return CommonResult.failed(ResultCode.UNAUTHORIZED,"你还没有登录或者登录信息已经过期");
         }
-
-        log.info("[{}]正在查询考试", loginResult.getXh());
-        List<ExamVO> scoreList = gdouJWService.getExam(loginResult, year, semester);
-
-        return CommonResult.success(scoreList);
+        ExamQueryRquestDTO examQueryRquestDTO = ExamQueryRquestDTO.builder()
+                .cookie(loginResult.getCookie())
+                .year(year)
+                .semester(semester)
+                .build();
+        log.info("[{}]正在查询考试", loginResult.getUsername());
+        gdouJWService.queryExam(examQueryRquestDTO);
+        return CommonResult.success();
     }
 
 
@@ -114,11 +126,11 @@ public class GdouJWControllerV2 {
     //获得查成绩页面年份下拉列表数据
     @GetMapping("/getScoreYearOptionsList")
     public CommonResult doGetScoreYearOptionsList(HttpSession httpSession) throws Exception {
-        LoginResult loginResult = (LoginResult) httpSession.getAttribute("studentLoginInfo");
+        LoginResultV2 loginResult = (LoginResultV2) httpSession.getAttribute("jw_cookie");
         if (loginResult == null){
             return CommonResult.failed(ResultCode.UNAUTHORIZED,"你还没有登录或者登录信息已经过期");
         }
-        List<String> yearOptionsList = gdouJWService.getSocreYearOptionsList(loginResult);
+        List<String> yearOptionsList = gdouJWService.getSocreYearOptionsList(loginResult.getUsername());
         return CommonResult.success(yearOptionsList);
     }
 
@@ -126,22 +138,12 @@ public class GdouJWControllerV2 {
     //获得查考试页面年份下拉列表数据
     @GetMapping("/getExamYearOptionsList")
     public CommonResult doGetExamYearOptionsList(HttpSession httpSession) throws Exception {
-        LoginResult loginResult = (LoginResult) httpSession.getAttribute("studentLoginInfo");
+        LoginResultV2 loginResult = (LoginResultV2) httpSession.getAttribute("jw_cookie");
         if (loginResult == null){
             return CommonResult.failed(ResultCode.UNAUTHORIZED,"你还没有登录或者登录信息已经过期");
         }
-        List<String> yearOptionsList = gdouJWService.getExamYearOptionsList(loginResult);
+        List<String> yearOptionsList = gdouJWService.getExamYearOptionsList(loginResult.getCookie());
         return CommonResult.success(yearOptionsList);
-    }
-
-
-    //自动评教
-    @PostMapping("/autoEvaluate")
-    public CommonResult doAutoEval(String xh, String password, String content, Integer mode) throws Exception {
-        LoginResult loginResult = gdouJWService.login(xh, password);
-        log.info("[{}]正在自动评教，参数-->[password]:{},[content]:{},[mode]:{}",xh,password,content,mode);
-        gdouJWService.autoEvaluate(loginResult,content, mode);
-        return CommonResult.success();
     }
 
 }

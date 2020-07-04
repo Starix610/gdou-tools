@@ -7,7 +7,7 @@ spring:
     #    data: classpath:db/data-h2.sql
     url: jdbc:mysql://www.starix.top:3306/weixin_mp?characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
-    password: 646722
+    password: xxxx
     druid:
       initial-size: 5 #连接池初始化大小
       min-idle: 10 #最小空闲连接数
@@ -31,4 +31,8 @@ server:
 
 # 教务系统地址
 gdou:
-  jw-url: http://210.38.137.77:8016
+#  jw-url: http://210.38.137.77:8016
+  webvpn-url: https://webvpn.gdou.edu.cn
+  webvpn-username: xxxx
+  webvpn-password: xxxx
+  jw-url: https://webvpn.gdou.edu.cn/http/77726476706e69737468656265737421a2a611d2746826012d5fc7f4cc
