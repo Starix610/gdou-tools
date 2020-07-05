@@ -11,11 +11,17 @@ import com.starix.gdou.exception.CustomException;
 import com.starix.gdou.response.CommonResult;
 import com.starix.gdou.service.GdouJWServiceV2;
 import com.starix.gdou.utils.HttpClientUtil;
+import com.starix.gdou.utils.RSAUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.Consts;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.security.interfaces.RSAKey;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,12 +48,18 @@ public class GdouJWServiceimplV2 implements GdouJWServiceV2 {
 
     @Override
     public LoginResultV2 login(String useranme, String password) throws Exception {
-        doWebvpnLogin();
+        // doWebvpnLogin();
         // 获取publickey，用于密码rsa加密
         String resultStr = HttpClientUtil.doGet(JW_URL + "/xtgl/login_getPublicKey.html");
         JSONObject json = JSON.parseObject(resultStr);
-        // TODO: 2020-07-05 RSA密码加密待实现
-        System.out.println(resultStr);
+        String modulus = json.getString("modulus");
+        String exponent = json.getString("exponent");
+        // 密码加密
+        String encryptPassword = RSAUtil.encrypt(modulus, exponent, password);
+        System.out.println(encryptPassword);
+        // 如果当前请求直接进入教务系统首页，说明是已登录状态，无需再登录
+        // 当评价执行过程出现异常导致webvpn未正确注销时，相同账号再次登录教务系统就会出现这个情况
+        HttpResponse response = HttpClientUtil.doGetAndGetResponse(JW_URL + "/xtgl/login_slogin.html");
         return null;
     }
 

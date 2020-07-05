@@ -29,7 +29,7 @@ server:
     key-store-password: Pr1ifVXd
     key-store-type: PKCS12
 
-# 教务系统地址
+
 gdou:
 #  jw-url: http://210.38.137.77:8016
   webvpn-url: https://webvpn.gdou.edu.cn

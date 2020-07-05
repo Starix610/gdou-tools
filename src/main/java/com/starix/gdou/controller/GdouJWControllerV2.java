@@ -41,7 +41,7 @@ public class GdouJWControllerV2 {
 
     @GetMapping("/test")
     public CommonResult test() throws Exception {
-        gdouJWService.login(null, null);
+        gdouJWService.login("xxx", "xxx");
         return CommonResult.success();
     }
 
