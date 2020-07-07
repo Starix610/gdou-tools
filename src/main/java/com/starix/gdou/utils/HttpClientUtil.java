@@ -1,20 +1,23 @@
 package com.starix.gdou.utils;
 
 import org.apache.http.*;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.RedirectStrategy;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.*;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContexts;
-import org.apache.http.ssl.TrustStrategy;
 import org.apache.http.util.EntityUtils;
 import org.springframework.http.MediaType;
 
@@ -23,10 +26,7 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -40,13 +40,17 @@ public class HttpClientUtil {
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " +
             "Chrome/79.0.3945.130 Safari/537.36";
 
-    private static final HttpClient httpClient = getHttpClient();
+    private CookieStore cookieStore = new BasicCookieStore();
+
+    // 为了隔离每个请求的httpClient实例，使彼此之间互不干扰，这里不采用static
+    private HttpClient httpClient = getHttpClient();
+
 
     /**
      * 创建忽略SSL验证的HttpClient实例
      * @return
      */
-    public static CloseableHttpClient getHttpClient() {
+    public CloseableHttpClient getHttpClient() {
         SSLContext sslContext = null;
         try {
             sslContext = SSLContexts.custom().loadTrustMaterial(null, (x509Certificates, s) -> true).build();
@@ -55,6 +59,7 @@ public class HttpClientUtil {
                     .setSSLHostnameVerifier(new NoopHostnameVerifier())
                     // 自动跟踪重定向(支持POST)
                     .setRedirectStrategy(new LaxRedirectStrategy())
+                    .setDefaultCookieStore(cookieStore)
                     .build();
             return client;
         } catch (NoSuchAlgorithmException e) {
@@ -67,20 +72,20 @@ public class HttpClientUtil {
         return null;
     }
 
-    public static String doGet(String url) throws Exception {
+    public String doGet(String url) throws Exception {
         HttpGet httpGet = new HttpGet(url);
         httpGet.setHeader("User-Agent", USER_AGENT);
         return executeRequest(httpGet);
     }
 
-    public static String doGet(String url, Map<String, String> params) throws Exception {
+    public String doGet(String url, Map<String, String> params) throws Exception {
         url = buildUrlWithParams(url, params);
         HttpGet httpGet = new HttpGet(url);
         httpGet.setHeader("User-Agent", USER_AGENT);
         return executeRequest(httpGet);
     }
 
-    public static String doGet(String url, Map<String, String> params, Map<String, String> headerParams) throws Exception {
+    public String doGet(String url, Map<String, String> params, Map<String, String> headerParams) throws Exception {
         url = buildUrlWithParams(url, params);
         HttpGet httpGet = new HttpGet(url);
         httpGet.setHeader("User-Agent", USER_AGENT);
@@ -90,7 +95,7 @@ public class HttpClientUtil {
         return executeRequest(httpGet);
     }
 
-    public static String doPost(String url, Map<String, String> formData) throws IOException {
+    public String doPost(String url, Map<String, String> formData) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         httpPost.setHeader("User-Agent", USER_AGENT);
         httpPost.addHeader("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE);
@@ -103,7 +108,7 @@ public class HttpClientUtil {
         return executeRequest(httpPost);
     }
 
-    public static String doPost(String url, String json) throws IOException {
+    public String doPost(String url, String json) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         httpPost.setHeader("User-Agent", USER_AGENT);
         httpPost.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
@@ -113,7 +118,7 @@ public class HttpClientUtil {
         return executeRequest(httpPost);
     }
 
-    public static String doPost(String url, Map<String, String> formData, Map<String, String> headerParams) throws IOException {
+    public String doPost(String url, Map<String, String> formData, Map<String, String> headerParams) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         httpPost.setHeader("User-Agent", USER_AGENT);
         httpPost.addHeader("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE);
@@ -129,7 +134,7 @@ public class HttpClientUtil {
         return executeRequest(httpPost);
     }
 
-    public static String doPost(String url, String json, Map<String, String> headerParams) throws IOException {
+    public String doPost(String url, String json, Map<String, String> headerParams) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         httpPost.setHeader("User-Agent", USER_AGENT);
         httpPost.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
@@ -143,14 +148,35 @@ public class HttpClientUtil {
     }
 
 
-    public static HttpResponse doGetAndGetResponse(String url) throws Exception {
+    public HttpResponse doGetAndGetResponse(String url) throws Exception {
         HttpGet httpGet = new HttpGet(url);
         httpGet.setHeader("User-Agent", USER_AGENT);
         return executeAndGetResponse(httpGet);
     }
 
 
-    private static String executeRequest(HttpRequestBase httpRequest) throws IOException {
+    public String getCookie(String name){
+        if (name == null || name.isEmpty()){
+            return null;
+        }
+        List<Cookie> cookies = cookieStore.getCookies();
+        for (Cookie cookie : cookies) {
+            if (name.equals(cookie.getName())){
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
+
+    public void setCookie(String name, String value){
+        if (name == null || name.isEmpty()){
+            return;
+        }
+        cookieStore.addCookie(new BasicClientCookie(name, value));
+    }
+
+
+    private String executeRequest(HttpRequestBase httpRequest) throws IOException {
         try {
             HttpResponse response = executeAndGetResponse(httpRequest);
             return EntityUtils.toString(response.getEntity(), Consts.UTF_8);
@@ -161,7 +187,7 @@ public class HttpClientUtil {
         }
     }
 
-    private static HttpResponse executeAndGetResponse(HttpRequestBase httpRequest) throws IOException {
+    private HttpResponse executeAndGetResponse(HttpRequestBase httpRequest) throws IOException {
         HttpResponse response = httpClient.execute(httpRequest);
         HttpEntity httpEntity = response.getEntity();
         if ((response.getStatusLine().getStatusCode() != HttpStatus.SC_OK && response.getStatusLine().getStatusCode() != HttpStatus.SC_MOVED_TEMPORARILY)
