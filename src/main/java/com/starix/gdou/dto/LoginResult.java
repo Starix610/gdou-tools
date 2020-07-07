@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import org.apache.http.Header;
 
 /**
- * v1：
+ * v1版本：
  * 封装登录成功之后的cookie值等关键数据，用于维持登录（虽然HttpClient会自动管理cookie，
  * 但是这里的cookie是来自python中识别验证码时获得的cookie而非来自HttpClient请求获得，所以需要手动保存管理）
  *
