@@ -23,7 +23,7 @@ public class BaseExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseExceptionHandler.class);
 
-    //处理其它异常
+    //处理其它异常（异常兜底处理）
     @ExceptionHandler(Exception.class)
     @ResponseBody
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
@@ -38,7 +38,7 @@ public class BaseExceptionHandler {
     public CommonResult handlerCustomException(Exception e){
         CustomException customException = (CustomException) e;
         CommonResult result = customException.getCommonResult();
-        logger.error("出现业务异常:[code:{},msg:{}]", result.getCode(), result.getMessage());
+        logger.error("业务异常:[code:{},msg:{}]", result.getCode(), result.getMessage());
         return result;
     }
 

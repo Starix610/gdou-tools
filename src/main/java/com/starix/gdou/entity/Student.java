@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import java.util.Date;
 
 /**
- * @author Tobu
+ * @author Starix
  * @date 2019-11-23 20:19
  */
 @Data
@@ -22,7 +22,7 @@ public class Student {
 
     private String openid;
 
-    private String xh;
+    private String username;
 
     private String password;
 

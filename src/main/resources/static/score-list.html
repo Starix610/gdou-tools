@@ -22,18 +22,19 @@
     }
 </style>
 <body>
-<div><h4 id="title" style="text-align: center">教务系统成绩快捷查询</h4></div>
+<div><h4 id="title" style="text-align: center">成绩快捷查询</h4></div>
 <div style="text-align: center;margin-bottom: 20px">
     <form id="selectForm">
         学年:
         <select name="year" id="year">
-            <!--<option value="2018-2019">2018-2019</option>-->
-            <!--<option value="2017-2018">2017-2018</option>-->
+<!--            <option value="2018-2019">2018-2019</option>-->
+<!--            <option value="2017-2018">2017-2018</option>-->
         </select>
         学期:
         <select name="semester" id="semester">
-            <option value="1">1</option>
-            <option value="2">2</option>
+            <option value="">全部</option>
+            <option value="3">1</option>
+            <option value="12">2</option>
         </select>
     </form>
 </div>
@@ -75,13 +76,13 @@
     })
 
     function getScore() {
-        $("#title").text($("#year").val()+"学年第"+$("#semester").val()+"学期成绩");
+        $("#title").text($("#year option:selected").text()+"学年第"+$("#semester option:selected").text()+"学期成绩");
         $("#info").hide();
         var params = $("#selectForm").serialize();
         $.ajax({
             type: "GET",
             contentType: "application/x-www-form-urlencoded",
-            url: BASE_URL+"/queryScore",
+            url: BASE_URL+"/jw/queryScore",
             data: params,
             dataType: "json",
             success: function (data) {
@@ -121,15 +122,21 @@
         $.ajax({
             type: "GET",
             contentType: "application/x-www-form-urlencoded",
-            url: BASE_URL + "/getScoreYearOptionsList",
+            url: BASE_URL + "/jw/getScoreYearOptionsList",
             dataType: "json",
             //改同步方式，先获取到年份列表才去获取成绩
             async: false,
             success: function (data) {
                 if (data.code == 200) {
-                    for (var i = 0;i<data.data.length;i++){
-                        $("#year").append("<option value=" + data.data[i] + ">" + data.data[i] + "</option>");
+                    for (var i = 0;i<data.data.yearList.length;i++){
+                        $("#year").append("<option value=" + data.data.yearList[i].split("-")[0] + ">" + data.data.yearList[i] + "</option>");
                     }
+                    //选中当前默认项
+                    $("#year").get(0).selectedIndex = data.data.selectedYear;
+                    $("#semester").get(0).selectedIndex = data.data.selectedSemester;
+                    //将第一项"全部"的value设置为空
+                    $("#year option:first").val("")
+                    $("#semester option:first").val("")
                 } else {
                     alert(data.message);
                     window.location.href = BASE_URL + "/score.html"

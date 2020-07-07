@@ -1,7 +1,7 @@
 package com.starix.gdou.service;
 
 /**
- * @author Tobu
+ * @author Starix
  * @date 2019-11-23 16:43
  */
 public interface UserBindService {

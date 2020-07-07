@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 
 /**
  * 旧版教务系统服务service实现类
- * @author Tobu
+ * @author Starix
  * @date 2019-11-20 20:05
  */
 @Service
@@ -359,7 +359,7 @@ public class GdouJWServiceImpl implements GdouJWService {
         if (student == null){
             throw new CustomException(CommonResult.failed("未绑定学号"));
         }
-        return login(student.getXh(), student.getPassword());
+        return login(student.getUsername(), student.getPassword());
     }
 
 

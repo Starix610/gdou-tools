@@ -23,15 +23,13 @@ import org.springframework.http.MediaType;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
  * 对httpclient进行一层封装
+ *
  * @author shiwenjie
  * @created 2020/6/28 5:41 下午
  **/
@@ -43,30 +41,23 @@ public class HttpClientUtil {
     private CookieStore cookieStore = new BasicCookieStore();
 
     // 为了隔离每个请求的httpClient实例，使彼此之间互不干扰，这里不采用static
-    private HttpClient httpClient = getHttpClient();
+    private HttpClient httpClient = createHttpClient();
 
 
-    /**
-     * 创建忽略SSL验证的HttpClient实例
-     * @return
-     */
-    public CloseableHttpClient getHttpClient() {
-        SSLContext sslContext = null;
+    public CloseableHttpClient createHttpClient() {
         try {
-            sslContext = SSLContexts.custom().loadTrustMaterial(null, (x509Certificates, s) -> true).build();
+            SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, (x509Certificates, s) -> true).build();
             CloseableHttpClient client = HttpClients.custom()
+                    // 忽略ssl验证
                     .setSSLContext(sslContext)
                     .setSSLHostnameVerifier(new NoopHostnameVerifier())
                     // 自动跟踪重定向(支持POST)
                     .setRedirectStrategy(new LaxRedirectStrategy())
+                    // cookie管理
                     .setDefaultCookieStore(cookieStore)
                     .build();
             return client;
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -147,65 +138,60 @@ public class HttpClientUtil {
         return executeRequest(httpPost);
     }
 
-
-    public HttpResponse doGetAndGetResponse(String url) throws Exception {
-        HttpGet httpGet = new HttpGet(url);
-        httpGet.setHeader("User-Agent", USER_AGENT);
-        return executeAndGetResponse(httpGet);
-    }
-
-
-    public String getCookie(String name){
-        if (name == null || name.isEmpty()){
+    public String getCookie(String name) {
+        if (name == null || name.isEmpty()) {
             return null;
         }
         List<Cookie> cookies = cookieStore.getCookies();
         for (Cookie cookie : cookies) {
-            if (name.equals(cookie.getName())){
+            if (name.equals(cookie.getName())) {
                 return cookie.getValue();
             }
         }
         return null;
     }
 
-    public void setCookie(String name, String value){
-        if (name == null || name.isEmpty()){
+    public void addCookie(String name, String value, Map<String, String> settings) {
+        if (name == null || name.isEmpty()) {
             return;
         }
-        cookieStore.addCookie(new BasicClientCookie(name, value));
+        BasicClientCookie cookie = new BasicClientCookie(name, value);
+        cookie.setPath(settings.get("path"));
+        cookie.setDomain(settings.get("domain"));
+        cookieStore.addCookie(cookie);
     }
-
 
     private String executeRequest(HttpRequestBase httpRequest) throws IOException {
         try {
-            HttpResponse response = executeAndGetResponse(httpRequest);
+            HttpResponse response = httpClient.execute(httpRequest);
+            HttpEntity httpEntity = response.getEntity();
+            if (!checkResult(response)) {
+                throw new RuntimeException(
+                        String.format("http请求响应状态异常, 响应状态吗：%s, 响应报文：%s",
+                        response.getStatusLine().getStatusCode(),
+                        EntityUtils.toString(httpEntity, Consts.UTF_8)));
+            }
             return EntityUtils.toString(response.getEntity(), Consts.UTF_8);
-        } catch (IOException e){
+        } catch (IOException e) {
             throw e;
         } finally {
             httpRequest.releaseConnection();
         }
     }
 
-    private HttpResponse executeAndGetResponse(HttpRequestBase httpRequest) throws IOException {
-        HttpResponse response = httpClient.execute(httpRequest);
-        HttpEntity httpEntity = response.getEntity();
-        if ((response.getStatusLine().getStatusCode() != HttpStatus.SC_OK && response.getStatusLine().getStatusCode() != HttpStatus.SC_MOVED_TEMPORARILY)
-                || response.getEntity() == null) {
-            throw new RuntimeException(String.format("http请求响应状态异常, 响应状态吗：%s, 响应报文：%s",
-                    response.getStatusLine().getStatusCode(),
-                    EntityUtils.toString(httpEntity, Consts.UTF_8)));
-        }
-        return response;
+    private boolean checkResult(HttpResponse response){
+        return (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK
+                || response.getStatusLine().getStatusCode() == HttpStatus.SC_MOVED_TEMPORARILY)
+                && response.getEntity() != null;
     }
 
     public static String buildUrlWithParams(String url, Map<String, String> params) throws Exception {
-        if (params == null || params.isEmpty()){
+        if (params == null || params.isEmpty()) {
             return url;
         }
         URIBuilder uriBuilder = new URIBuilder(url);
-        for(Map.Entry<String,String> entry : params.entrySet()){
-            uriBuilder.addParameter(entry.getKey(),entry.getValue());
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            uriBuilder.addParameter(entry.getKey(), entry.getValue());
         }
         return uriBuilder.build().toString();
     }

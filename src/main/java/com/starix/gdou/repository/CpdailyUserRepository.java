@@ -4,7 +4,7 @@ import com.starix.gdou.entity.CpdailyUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * @author Tobu
+ * @author Starix
  * @date 2020-04-06 12:14
  */
 public interface CpdailyUserRepository extends JpaRepository<CpdailyUser, Integer> {

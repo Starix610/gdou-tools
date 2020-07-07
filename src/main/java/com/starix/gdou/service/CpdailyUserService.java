@@ -3,7 +3,7 @@ package com.starix.gdou.service;
 import com.starix.gdou.entity.CpdailyUser;
 
 /**
- * @author Tobu
+ * @author Starix
  * @date 2020-04-06 13:27
  */
 public interface CpdailyUserService {

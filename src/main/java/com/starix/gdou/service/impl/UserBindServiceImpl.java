@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 /**
- * @author Tobu
+ * @author Starix
  * @date 2019-11-23 16:43
  */
 @Service
@@ -35,7 +35,7 @@ public class UserBindServiceImpl implements UserBindService {
         }
         Student student = new Student();
         student.setOpenid(openid);
-        student.setXh(xh);
+        student.setUsername(xh);
         student.setPassword(password);
         student.setCreateTime(new Date());
         studentRepository.save(student);

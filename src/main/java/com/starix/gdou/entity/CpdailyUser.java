@@ -1,7 +1,7 @@
 package com.starix.gdou.entity;
 
-import java.util.Date;
 import lombok.Data;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,11 +9,12 @@ import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.Date;
 
 /**
  * (CpdailyUser)表实体类
  *
- * @author Tobu
+ * @author Starix
  * @since 2020-04-06 12:11:41
  */
 @SuppressWarnings("serial")

@@ -3,7 +3,7 @@ package com.starix.gdou.vo;
 import lombok.Data;
 
 /**
- * @author Tobu
+ * @author Starix
  * @date 2019-11-22 16:06
  */
 @Data

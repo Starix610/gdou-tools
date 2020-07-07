@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 教务系统服务service
  * v1版本
- * @author Tobu
+ * @author Starix
  * @date 2019-11-20 20:05
  */
 public interface GdouJWService {

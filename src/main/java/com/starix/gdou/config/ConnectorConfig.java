@@ -1,10 +1,6 @@
 package com.starix.gdou.config;
 
-import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
-import org.apache.coyote.http11.Http11NioProtocol;
-import org.apache.tomcat.util.descriptor.web.SecurityCollection;
-import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
@@ -14,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 配置同时支持HTTP和HTTPS请求
  * 或者使HTTP请求重定向到HTTPS
- * @author Tobu
+ * @author Starix
  * @date 2019-12-29 14:42
  */
 @Configuration

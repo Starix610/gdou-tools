@@ -2,6 +2,7 @@
 // All rights reserved
 package com.starix.gdou.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -12,6 +13,7 @@ import lombok.Data;
  * @created 2020/7/1 4:02 下午
  **/
 @Data
+@AllArgsConstructor
 public class LoginResultV2 {
 
     private String cookie;

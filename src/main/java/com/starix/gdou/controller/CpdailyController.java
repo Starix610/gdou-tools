@@ -5,22 +5,17 @@ import com.starix.gdou.response.CommonResult;
 import com.starix.gdou.service.CpdailyUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 /**
- * @author Tobu
+ * @author Starix
  * @date 2020-04-06 12:09
  */
 @RestController
+@RequestMapping("/cpdaily")
 @Slf4j
 @CrossOrigin
 public class CpdailyController {
@@ -29,7 +24,7 @@ public class CpdailyController {
     private CpdailyUserService cpdailyUserService;
 
     //新增签到用户
-    @PostMapping(value = "/cpdaily/addUser")
+    @PostMapping(value = "/addUser")
     public CommonResult addCpdailyUser(@RequestBody @Valid CpdailyUser user, BindingResult bindingResult) throws Exception {
         // TODO: 2020-05-04 停止使用
         return CommonResult.failed("自动签到服务已停用！");
@@ -44,7 +39,7 @@ public class CpdailyController {
     }
 
     //取消签到
-    @PostMapping(value = "/cpdaily/delUser")
+    @PostMapping(value = "/delUser")
     public CommonResult delCpdailyUser(String username, String password) throws Exception {
         // TODO: 2020-05-04 停止使用
         return CommonResult.failed("自动签到服务已停用，无须手动取消！");
@@ -56,7 +51,7 @@ public class CpdailyController {
     }
 
     //更新签到信息
-    @PostMapping(value = "/cpdaily/updateUser")
+    @PostMapping(value = "/updateUser")
     public CommonResult udpateCpdailyUser(@RequestBody @Valid CpdailyUser user, BindingResult bindingResult) throws Exception {
         // TODO: 2020-05-04 停止使用
         return CommonResult.failed("自动签到服务已停用！");
