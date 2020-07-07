@@ -7,6 +7,7 @@ import com.starix.gdou.dto.response.ExamQueryResponseDTO;
 import com.starix.gdou.dto.response.ScoreQueryResponseDTO;
 import com.starix.gdou.dto.response.YearOptionListResponseDTO;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -40,7 +41,7 @@ public interface GdouJWServiceV2 {
      * @param scoreQueryRquestDTO
      * @return
      */
-    ScoreQueryResponseDTO queryScore(ScoreQueryRquestDTO scoreQueryRquestDTO);
+    List<ScoreQueryResponseDTO> queryScore(ScoreQueryRquestDTO scoreQueryRquestDTO) throws IOException;
 
     /**
      * 查询考试信息

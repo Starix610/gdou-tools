@@ -1,8 +1,9 @@
 .loading{
-    width: 80px;
+    /*width: 80px;*/
     height: 40px;
-    margin: 0 auto;
+    /*margin: 0 auto;*/
     margin-top:100px;
+    text-align: center;
 }
 .loading span{
     display: inline-block;

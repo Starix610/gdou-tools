@@ -1,6 +1,7 @@
 package com.starix.gdou.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.starix.gdou.dto.LoginResultV2;
 import com.starix.gdou.dto.request.ExamQueryRquestDTO;
@@ -149,8 +150,33 @@ public class GdouJWServiceimplV2 implements GdouJWServiceV2 {
     }
 
     @Override
-    public ScoreQueryResponseDTO queryScore(ScoreQueryRquestDTO scoreQueryRquestDTO) {
-        return null;
+    public List<ScoreQueryResponseDTO> queryScore(ScoreQueryRquestDTO scoreQueryRquestDTO) throws IOException {
+        HttpClientUtil httpClient = new HttpClientUtil();
+        addCookie(httpClient, scoreQueryRquestDTO.getCookie());
+        Map<String, String> data = new HashMap<>();
+        data.put("xnm", scoreQueryRquestDTO.getYear());
+        data.put("xqm", scoreQueryRquestDTO.getSemester());
+        data.put("_search", "false");
+        data.put("queryModel.showCount", "15");
+        data.put("queryModel.currentPage", "1");
+        data.put("queryModel.sortName", "");
+        data.put("queryModel.sortOrder", "asc");
+        // data.put("nd", "1594138638066");
+        // data.put("time", "3");
+        String resultStr = httpClient.doPost(JW_URL + "/cjcx/cjcx_cxDgXscj.html?doType=query&gnmkdm=N305005", data);
+        JSONObject json = JSON.parseObject(resultStr);
+        List<ScoreQueryResponseDTO> resultList = buildScoreQueryResponseDTOList(json);
+        Integer totalPage = json.getInteger("totalPage");
+        // 获取剩余页数据
+        if (totalPage > 1){
+            for (int p = 2; p <= totalPage; p++) {
+                data.put("queryModel.currentPage", p + "");
+                resultStr = httpClient.doPost(JW_URL + "/cjcx/cjcx_cxDgXscj.html?doType=query&gnmkdm=N305005", data);
+                json = JSON.parseObject(resultStr);
+                resultList.addAll(buildScoreQueryResponseDTOList(json));
+            }
+        }
+        return resultList;
     }
 
     @Override
@@ -161,10 +187,7 @@ public class GdouJWServiceimplV2 implements GdouJWServiceV2 {
     @Override
     public YearOptionListResponseDTO getSocreYearOptionList(String cookie) throws Exception {
         HttpClientUtil httpClient = new HttpClientUtil();
-        Map<String, String> cookieSettings = new HashMap<>();
-        cookieSettings.put("domain", WEBVPN_URL.replaceFirst("https://",""));
-        cookieSettings.put("path", "/");
-        httpClient.addCookie(COOKIE_NAME, "42f1a517a9b4e520", cookieSettings);
+        addCookie(httpClient, cookie);
         String resultStr = httpClient.doGet(JW_URL + "/cjcx/cjcx_cxDgXscj.html?gnmkdm=N305005");
         Document document = Jsoup.parse(resultStr);
         return buildYearOptionListResponseDTO(document);
@@ -197,4 +220,30 @@ public class GdouJWServiceimplV2 implements GdouJWServiceV2 {
         }
         return new YearOptionListResponseDTO(yearOptionList, selectedYear, selectedSemester);
     }
+
+    private void addCookie(HttpClientUtil httpClient, String cookie){
+        Map<String, String> cookieSettings = new HashMap<>();
+        cookieSettings.put("domain", WEBVPN_URL.replaceFirst("https://",""));
+        cookieSettings.put("path", "/");
+        httpClient.addCookie(COOKIE_NAME, cookie, cookieSettings);
+    }
+
+    private List<ScoreQueryResponseDTO> buildScoreQueryResponseDTOList(JSONObject json){
+        JSONArray items = json.getJSONArray("items");
+        List<ScoreQueryResponseDTO> resultList = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            ScoreQueryResponseDTO scoreQueryResponseDTO = ScoreQueryResponseDTO.builder()
+                    .courseName(items.getJSONObject(i).getString("kcmc"))
+                    .credit(items.getJSONObject(i).getString("xf"))
+                    .score(items.getJSONObject(i).getString("cj"))
+                    .gpa(items.getJSONObject(i).getString("jd"))
+                    .property(items.getJSONObject(i).getString("kcxzmc"))
+                    .category(items.getJSONObject(i).getString("kclbmc"))
+                    .belongTo(items.getJSONObject(i).getString("kcgsmc"))
+                    .build();
+            resultList.add(scoreQueryResponseDTO);
+        }
+        return resultList;
+    }
+
 }
