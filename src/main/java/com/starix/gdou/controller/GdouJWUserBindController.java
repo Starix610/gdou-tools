@@ -31,8 +31,11 @@ public class GdouJWUserBindController {
 
     @PostMapping("/bind")
     public CommonResult doBind(String openid, String username, String password) throws Exception {
-        if (!checkBindParams(openid, username, password)){
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
             return CommonResult.failed(ResultCode.VALIDATE_FAILED);
+        }
+        if (StringUtils.isEmpty(openid)){
+            return CommonResult.failed("未获取到关注用户的信息，请从公众号内进入该页面再进行绑定！");
         }
         log.info("[{}]绑定学号", username);
         // 绑定前先验证账号密码是否正确

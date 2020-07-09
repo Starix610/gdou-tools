@@ -207,8 +207,7 @@
                 $("#loading").hide();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                $("#info").text("服务器异常");
-                $("#info").show();
+                showErrInfo("服务器异常");
                 $("#loading").hide();
             }
 
