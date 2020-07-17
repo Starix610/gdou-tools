@@ -180,7 +180,7 @@
 <div id="wrapper" class="login-page">
     <div id="login_form" class="form">
         <form id="loginForm" class="login-form">
-            <input type="text" placeholder="学号" name="xh" id="xh"/>
+            <input type="text" placeholder="学号" name="username" id="username"/>
             <input type="password" placeholder="密码" name="password" id="password"/>
             <div id="info" style="display:none;color: red;font-size: 12px;margin-bottom: 10px;word-wrap:break-word;">error info</div>
             <button id="login">绑定</button>
@@ -192,6 +192,7 @@
         <span></span>
         <span></span>
         <span></span>
+        <div style="font-size: 12px;text-align: center;margin-top: 10px">正在绑定...</div>
     </div>
 </div>
 <script src="js/jquery-2.1.1.min.js"></script>
@@ -199,7 +200,7 @@
 <script type="text/javascript">
     function do_bind() {
         var params = new FormData();
-        params.append("xh",$("#xh").val());
+        params.append("username",$("#username").val());
         params.append("password",$("#password").val());
         params.append("openid",getQueryVariable("openid"));
         $("#info").hide();
@@ -207,30 +208,25 @@
         $.ajax({
             type: "POST",
             contentType: "application/x-www-form-urlencoded",
-            url: BASE_URL + "/bind",
+            url: BASE_URL + "/jw/bind",
             data: params,
             processData: false,
             contentType: false,
             dataType: "json",
             success: function(data){
                 if(data.code == 200){
-                    alert("绑定成功~公众号后台重新回复即可直接查询成绩或者考试")
+                    alert("绑定成功！公众号内重新回复关键词即可直接查询成绩或考试！")
+                    $("#info").text("绑定成功！公众号内重新回复关键词即可直接查询成绩或考试！");
+                    $("#info").css("color","green");
+                    $("#info").show();
                 }else {
                     // alert(data.message);
-                    $("#info").text(data.message);
-                    $("#info").show();
-
-                    //窗口振动
-                    $("#login_form").removeClass('shake_effect');
-                    setTimeout(function () {
-                        $("#login_form").addClass('shake_effect')
-                    }, 1);
+                    showErrInfo(data.message)
                 }
                 $("#loading").hide();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                $("#info").text("服务器异常");
-                $("#info").show();
+                showErrInfo("服务器异常")
                 $("#loading").hide();
             }
 
@@ -239,8 +235,7 @@
     $(function () {
         $("#login").click(function () {
             if ($("#xh").val() == '' || $("#password").val() == ''){
-                $("#info").text("信息填写不完整");
-                $("#info").show();
+                showErrInfo("信息填写不完整")
                 //窗口振动
                 $("#login_form").removeClass('shake_effect');
                 setTimeout(function () {
@@ -259,6 +254,18 @@
             }, 'slow');
         });
     })
+
+    // 显示错误信息
+    function showErrInfo(info){
+        $("#info").text(info);
+        $("#info").css("color","red");
+        $("#info").show();
+        //窗口振动
+        $("#login_form").removeClass('shake_effect');
+        setTimeout(function () {
+            $("#login_form").addClass('shake_effect')
+        }, 1);
+    }
 
 </script>
 </body>
