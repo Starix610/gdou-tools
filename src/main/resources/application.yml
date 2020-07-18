@@ -36,6 +36,16 @@ spring:
         max-wait: 60s
         # 连接池中的最小空闲连接 默认 0
         min-idle: 50
+  mail:
+    host: smtp.163.com
+    port: 465
+    username: starix610@163.com
+    password: xxxx
+    protocol: smtp
+    properties:
+      mail.smtp.ssl.enable: true
+
+
 
 server:
   # 这个用作https端口

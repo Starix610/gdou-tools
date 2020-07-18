@@ -56,15 +56,15 @@ public class GdouJWServiceimplV2 implements GdouJWServiceV2 {
 
 
     @Override
-    public LoginResultV2 login(String useranme, String password) throws Exception {
+    public LoginResultV2 login(String username, String password) throws Exception {
         // 一次完整流程中的所有请求都需要使用同一个httpclient实例，保持cookie同步
         HttpClientUtil httpClient = new HttpClientUtil();
         // webvpn登录
         webvpnLogin(httpClient);
         // 教务系统登录
-        jwLogin(httpClient, useranme, password);
+        jwLogin(httpClient, username, password);
         String cookie = httpClient.getCookie(COOKIE_NAME);
-        return new LoginResultV2(cookie, useranme);
+        return new LoginResultV2(cookie, username);
     }
 
     /**
@@ -123,7 +123,6 @@ public class GdouJWServiceimplV2 implements GdouJWServiceV2 {
                 throw new CustomException(CommonResult.failed("内置webvpn异常，等待修复"));
             }
         }
-        log.info("webvpn登录成功");
     }
 
     /**
@@ -203,9 +202,11 @@ public class GdouJWServiceimplV2 implements GdouJWServiceV2 {
         //获取年份下拉列表数据
         Elements yearOptions = document.getElementById("xnm").getElementsByTag("option");
         int selectedYear = 0;
-        List<String> yearOptionList = new ArrayList<>();
+        List<String> yearOptionValueList = new ArrayList<>();
+        List<String> yearOptionTextList = new ArrayList<>();
         for (int i = 0; i < yearOptions.size(); i++) {
-            yearOptionList.add(yearOptions.get(i).text());
+            yearOptionValueList.add(yearOptions.get(i).val());
+            yearOptionTextList.add(yearOptions.get(i).text());
             if (yearOptions.get(i).hasAttr("selected")){
                 selectedYear = i;
             }
@@ -213,12 +214,24 @@ public class GdouJWServiceimplV2 implements GdouJWServiceV2 {
         //获取学期下拉列表数据（这里暂时只是获取选中的下标，选项数据前端写死）
         Elements semesterOptions = document.getElementById("xqm").getElementsByTag("option");
         int selectedSemester = 0;
+        List<String> semeterOptionValueList = new ArrayList<>();
+        List<String> semeterOptionTextList = new ArrayList<>();
         for (int i = 0; i < semesterOptions.size(); i++) {
+            semeterOptionValueList.add(semesterOptions.get(i).val());
+            semeterOptionTextList.add(semesterOptions.get(i).text());
             if (semesterOptions.get(i).hasAttr("selected")){
                 selectedSemester = i;
             }
         }
-        return new YearOptionListResponseDTO(yearOptionList, selectedYear, selectedSemester);
+        YearOptionListResponseDTO responseDTO = YearOptionListResponseDTO.builder()
+                .yearValueList(yearOptionValueList)
+                .yearTextList(yearOptionTextList)
+                .semesterValueList(semeterOptionValueList)
+                .semesterTextList(semeterOptionTextList)
+                .selectedYear(selectedYear)
+                .selectedSemester(selectedSemester)
+                .build();
+        return responseDTO;
     }
 
     private void addCookie(HttpClientUtil httpClient, String cookie){

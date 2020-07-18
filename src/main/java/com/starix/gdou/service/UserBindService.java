@@ -14,4 +14,6 @@ public interface UserBindService {
     boolean isBinding(String openid);
 
     void bind(String openid, String xh, String password);
+
+    String queryUsernameByOpenid(String openid);
 }

@@ -27,14 +27,14 @@
     <form id="selectForm">
         学年:
         <select name="year" id="year">
-<!--            <option value="2018-2019">2018-2019</option>-->
-<!--            <option value="2017-2018">2017-2018</option>-->
+<!--            <option value="2018">2018-2019</option>-->
+<!--            <option value="2017">2017-2018</option>-->
         </select>
         学期:
         <select name="semester" id="semester">
-            <option value="">全部</option>
-            <option value="3">1</option>
-            <option value="12">2</option>
+            <!--<option value="">全部</option>-->
+            <!--<option value="3">1</option>-->
+            <!--<option value="12">2</option>-->
         </select>
     </form>
 </div>
@@ -128,15 +128,18 @@
             async: false,
             success: function (data) {
                 if (data.code == 200) {
-                    for (var i = 0;i<data.data.yearList.length;i++){
-                        $("#year").append("<option value=" + data.data.yearList[i].split("-")[0] + ">" + data.data.yearList[i] + "</option>");
+                    for (var i = 0;i<data.data.yearValueList.length;i++){
+                        $("#year").append("<option value=" + data.data.yearValueList[i]+ ">" + data.data.yearTextList[i] + "</option>");
+                    }
+                    for (var i = 0;i<data.data.semesterValueList.length;i++){
+                        $("#semester").append("<option value=" + data.data.semesterValueList[i]+ ">" + data.data.semesterTextList[i] + "</option>");
                     }
                     //选中当前默认项
                     $("#year").get(0).selectedIndex = data.data.selectedYear;
                     $("#semester").get(0).selectedIndex = data.data.selectedSemester;
                     //将第一项"全部"的value设置为空
-                    $("#year option:first").val("")
-                    $("#semester option:first").val("")
+                    // $("#year option:first").val("")
+                    // $("#semester option:first").val("")
                 } else {
                     alert(data.message);
                     window.location.href = BASE_URL + "/score.html"

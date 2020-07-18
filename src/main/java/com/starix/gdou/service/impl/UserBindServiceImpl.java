@@ -37,7 +37,17 @@ public class UserBindServiceImpl implements UserBindService {
         student.setOpenid(openid);
         student.setUsername(xh);
         student.setPassword(password);
+        student.setNotifyStatus(0);
         student.setCreateTime(new Date());
         studentRepository.save(student);
+    }
+
+    @Override
+    public String queryUsernameByOpenid(String openid) {
+        Student student = studentRepository.findByOpenid(openid);
+        if (student != null){
+            return student.getUsername();
+        }
+        return null;
     }
 }

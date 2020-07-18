@@ -1,6 +1,7 @@
 package com.starix.gdou.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ import java.util.Date;
  */
 @Data
 @Entity
+@DynamicUpdate
 public class Student {
 
     @Id
@@ -26,7 +28,13 @@ public class Student {
 
     private String password;
 
+    private Integer notifyStatus;
+
     private Date createTime;
+
+    private Date updateTime;
+
+    private String email;
 
 
 }
