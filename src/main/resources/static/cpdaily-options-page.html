@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<!-- saved from url=(0056)http://tympanus.net/Development/ButtonStylesInspiration/ -->
+
+<html lang="en" class="no-js">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>自动签到</title>
+    <meta name="description" content="Some ideas for modern button styles and effects">
+    <meta name="keywords" content="button, effect, hover, style, inspiration, web design">
+    <meta name="author" content="Codrops">
+    <link rel="shortcut icon" href="http://tympanus.net/Development/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="./css/button/normalize.css">
+    <link rel="stylesheet" type="text/css" href="./css/button/vicons-font.css">
+    <link rel="stylesheet" type="text/css" href="./css/button/base.css">
+    <link rel="stylesheet" type="text/css" href="./css/button/buttons.css">
+    <link rel="stylesheet" type="text/css" href="./css/button/demoadpacks.css">
+    <script id="_carbonads_projs" type="text/javascript" src="./css/button/C6AILKT.json"></script>
+    <style>
+        /*body {*/
+            /*background: #7385b8; !* fallback for old browsers *!*/
+            /*background: -webkit-linear-gradient(right, #7385b8, #7eadc2);*/
+            /*background: -moz-linear-gradient(right, #7385b8, #7eadc2);*/
+            /*background: -o-linear-gradient(right, #7385b8, #7eadc2);*/
+            /*background: linear-gradient(to left, #c174b7, #7bc7e9);*/
+            /*font-family: "Roboto", sans-serif;*/
+            /*-webkit-font-smoothing: antialiased;*/
+            /*-moz-osx-font-smoothing: grayscale;*/
+        /*}*/
+        .custom{
+            padding: 10px 0;
+            width: 200px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <header class="codrops-header"></header>
+    <section class="content" style="margin-top: -30px">
+        <h2>签到操作</h2>
+        <div class="box bg-2" style="border-radius: 5px">
+            <button class="button button--wayra button--border-thin button--round-s custom" id="add">添加签到用户</button>
+            <button class="button button--wayra button--border-thin button--round-s custom" id="update">签到信息修改</button>
+            <button class="button button--wayra button--border-thin button--round-s custom" id="del">自动签到取消</button>
+        </div>
+    </section>
+</div>
+
+<script src="js/jquery-2.1.1.min.js"></script>
+<script src="js/app.js"></script>
+<script>
+    $(function () {
+        $("#add").click(function () {
+            window.location.href = BASE_HTTP_URL + "/cpdaily-add-user.html"
+        })
+        $("#update").click(function () {
+            window.location.href = BASE_HTTP_URL + "/cpdaily-update-user.html"
+        })
+        $("#del").click(function () {
+            window.location.href = BASE_HTTP_URL + "/cpdaily-del-user.html"
+        })
+    })
+</script>
+</body>
+</html>

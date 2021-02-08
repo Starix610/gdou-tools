@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自动评教</title>
+    <link rel="stylesheet" href="css/loading2.css">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="css/default.css">
+    <style type="text/css">
+        .login-page {
+            width: 360px;
+            padding: 8% 0 0;
+            margin: auto;
+        }
+
+        .form {
+            position: relative;
+            z-index: 1;
+            background: #FFFFFF;
+            max-width: 360px;
+            margin: 0 auto 100px;
+            padding: 45px;
+            text-align: center;
+            box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+        }
+
+        .form input {
+            font-family: "Roboto", sans-serif;
+            outline: 0;
+            background: #f2f2f2;
+            width: 100%;
+            border: 0;
+            margin: 0 0 15px;
+            padding: 15px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .form button {
+            font-family: "Microsoft YaHei", "Roboto", sans-serif;
+            text-transform: uppercase;
+            outline: 0;
+            background: #4CAF50;
+            width: 100%;
+            border: 0;
+            padding: 15px;
+            color: #FFFFFF;
+            font-size: 14px;
+            -webkit-transition: all 0.3 ease;
+            transition: all 0.3 ease;
+            cursor: pointer;
+        }
+
+        .form button:hover, .form button:active, .form button:focus {
+            background: #43A047;
+        }
+
+        .form .message {
+            margin: 15px 0 0;
+            color: #b3b3b3;
+            font-size: 12px;
+        }
+
+        .form .message a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .form .register-form {
+            display: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .container:before, .container:after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+        .container .info {
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        .container .info h1 {
+            margin: 0 0 15px;
+            padding: 0;
+            font-size: 36px;
+            font-weight: 300;
+            color: #1a1a1a;
+        }
+
+        .container .info span {
+            color: #4d4d4d;
+            font-size: 12px;
+        }
+
+        .container .info span a {
+            color: #000000;
+            text-decoration: none;
+        }
+
+        .container .info span .fa {
+            color: #EF3B3A;
+        }
+
+        body {
+            background: #2fb8b3; /* fallback for old browsers */
+            background: -webkit-linear-gradient(right, #2fb8b3, #bf86c2);
+            background: -moz-linear-gradient(right, #2fb8b3, #bf86c2);
+            background: -o-linear-gradient(right, #2fb8b3, #bf86c2);
+            background: linear-gradient(to left, #2fb8b3, #bf86c2);
+            font-family: "Roboto", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .shake_effect {
+            -webkit-animation-name: shake;
+            animation-name: shake;
+            -webkit-animation-duration: 1s;
+            animation-duration: 1s;
+        }
+
+        @-webkit-keyframes shake {
+            from, to {
+                -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                -webkit-transform: translate3d(-10px, 0, 0);
+                transform: translate3d(-10px, 0, 0);
+            }
+            20%, 40%, 60%, 80% {
+                -webkit-transform: translate3d(10px, 0, 0);
+                transform: translate3d(10px, 0, 0);
+            }
+        }
+
+        @keyframes shake {
+            from, to {
+                -webkit-transform: translate3d(0, 0, 0);
+                transform: translate3d(0, 0, 0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                -webkit-transform: translate3d(-10px, 0, 0);
+                transform: translate3d(-10px, 0, 0);
+            }
+            20%, 40%, 60%, 80% {
+                -webkit-transform: translate3d(10px, 0, 0);
+                transform: translate3d(10px, 0, 0);
+            }
+        }
+        p.center {
+            color: #fff;
+            font-family: "Microsoft YaHei";
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="color: white;text-align: center;margin-top: 75px;">自动评教</h2>
+<div id="wrapper" class="login-page">
+    <div id="login_form" class="form">
+        <!--<p style="color: red;font-size: 15px">教务系统平台已经改版迁移，因此旧的自动评教功能已不再适用。新的自动评教功能正在开发中，敬请等待。</p>-->
+        <p style="color: red;font-size: 15px">此版本已废弃，请在公众号内重新回复关键词获取新入口</p>
+        <!--<form id="loginForm" class="login-form">-->
+            <!--<input type="text" placeholder="学号" name="xh" id="xh"/>-->
+            <!--<input type="password" placeholder="密码" name="password" id="password"/>-->
+            <!--<input type="text" placeholder="填写对老师的评价或建议，5字以上" name="content" id="content"/>-->
+            <!--<div style="margin-bottom: 20px;font-size: 14px;text-align: left">-->
+                <!--模式：-->
+                <!--<select id="mode" name="mode">-->
+                    <!--<option value="0">全程自动，啥都不用做</option>-->
+                    <!--<option value="1">评价完成后，到官网手动提交</option>-->
+                <!--</select>-->
+            <!--</div>-->
+            <!--<div id="info" style="display: none;color: red;font-size: 12px;margin-bottom: 15px;word-wrap:break-word;">error info</div>-->
+            <!--<button id="evaluate">一键评教</button>-->
+        <!--</form>-->
+    </div>
+</div>
+
+<div id="loading" style="display: none;">
+    <div id="loading-center">
+        <div id="loading-center-absolute">
+            <div class="object" id="object_four"></div>
+            <div class="object" id="object_three"></div>
+            <div class="object" id="object_two"></div>
+            <div class="object" id="object_one"></div>
+        </div>
+        <div style="width: 330px; margin: 0 auto;padding-top: 390px;text-align: center">
+            <div style="font-size: 14px">正在自动评教中...此过程将耗时30s左右（时间取决于服务器目前负载状态和网络状态），请耐心等待，不要退出此页面</div>
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery-2.1.1.min.js"></script>
+<script src="js/app.js"></script>
+<script type="text/javascript">
+    function do_auto_evaluate() {
+        var params = new FormData();
+        params.append("xh",$("#xh").val());
+        params.append("password",$("#password").val());
+        params.append("content",$('#content').val());
+        params.append("mode",$('#mode').val());
+        $("#info").hide();
+        $("#loading").fadeIn();
+        $.ajax({
+            type: "POST",
+            contentType: "application/x-www-form-urlencoded",
+            url: BASE_URL + "/autoEvaluate",
+            data: params,
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            success: function(data){
+                if(data.code == 200){
+                    var msg = '';
+                    if ($('#mode').val() == 0){
+                        msg = '评教成功！'
+                    } else if($('#mode').val() == 1){
+                        msg = '所有评价已完成，请到官网手动提交！'
+                    }
+                    alert(msg);
+                    $("#info").css("color","blue");
+                    $("#info").text(msg);
+                    $("#info").show();
+                }else if(data.code == 300) {
+                    alert(data.message);
+                    $("#info").text(data.message);
+                    $("#info").show();
+                }else{
+                    alert(data.message);
+                    $("#info").text(data.message);
+                    $("#info").show();
+                }
+                $("#loading").fadeOut();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $("#info").text("服务器异常");
+                $("#info").show();
+                $("#loading").fadeOut();
+            }
+
+        });
+    }
+    $(function () {
+        
+        $("#evaluate").click(function () {
+            if ($("#xh").val() == '' || $("#password").val() == '' || $('#content').val() == ''){
+                showErrInfo("信息填写不完整");
+                return false;
+            }
+            //测试中文字符的正则表达式
+            re = /[\u4E00-\u9FA5]/g;
+            //中文字数小于5个禁止提交
+            var content = $('#content').val();
+                if (!re.test(content) || content.match(re).length <= 5 || content.match(re).length > 50) {
+                showErrInfo("必须包含5字以上50字以下的评价内容");
+                return false;
+            }
+
+            do_auto_evaluate();
+            return false;
+        })
+
+
+        $('.message a').click(function () {
+            $('form').animate({
+                height: 'toggle',
+                opacity: 'toggle'
+            }, 'slow');
+        });
+    })
+
+    // 显示错误信息
+    function showErrInfo(info){
+        $("#info").text(info);
+        $("#info").css("color","red");
+        $("#info").show();
+        //窗口振动
+        $("#login_form").removeClass('shake_effect');
+        setTimeout(function () {
+            $("#login_form").addClass('shake_effect')
+        }, 1);
+    }
+</script>
+</body>
+</html>

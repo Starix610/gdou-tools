@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>考试查询</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<style>
+    body {
+    background: #76b852; /* fallback for old browsers */
+    background: -webkit-linear-gradient(right, #76b852, #8DC26F);
+    background: -moz-linear-gradient(right, #76b852, #8DC26F);
+    background: -o-linear-gradient(right, #76b852, #8DC26F);
+    background: linear-gradient(to left, #76b852, #8DC26F);
+    font-family: "Roboto", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    }
+</style>
+<body>
+<div><h4 id="title" style="text-align: center">考试快捷查询</h4></div>
+<div style="text-align: center;margin-bottom: 20px">
+    <form id="selectForm">
+        学年:
+        <select name="year" id="year">
+            <!--<option value="2018-2019">2018-2019</option>-->
+            <!--<option value="2017-2018">2017-2018</option>-->
+        </select>
+        学期:
+        <select name="semester" id="semester">
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select>
+    </form>
+</div>
+<div style="padding: 5px">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>课程名</th>
+            <th>姓名</th>
+            <th>考试时间</th>
+            <th>考试地点</th>
+        </tr>
+        </thead>
+        <tbody id="tableList">
+        <!--<tr>-->
+        <!--<td>1111</td>-->
+        <!--<td>asd</td>-->
+        <!--<td>dsa</td>-->
+        <!--<td>asd</td>-->
+        <!--</tr>-->
+        </tbody>
+    </table>
+    <div id="info" style="display: none;text-align: center;color: red">该学期还没有成绩数据</div>
+</div>
+</body>
+<script src="js/app.js"></script>
+<script type="text/javascript">
+    $(function () {
+        getExamYearOptionsList();
+        getExam();
+    })
+
+    $("#year").change(function () {
+        getExam();
+    })
+
+    $("#semester").change(function () {
+        getExam();
+    })
+
+    function getExam() {
+        $("#title").text($("#year").val()+"学年第"+$("#semester").val()+"学期考试");
+        $("#info").hide();
+        var params = $("#selectForm").serialize();
+        $.ajax({
+            type: "GET",
+            contentType: "application/x-www-form-urlencoded",
+            url: BASE_URL+"/jw/queryExam",
+            data: params,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200) {
+                    $("#tableList").empty();
+                    if (data.data.length>0) {
+                        var html = "";
+                        for (var i = 0;i<data.data.length;i++){
+                            html += "<tr>";
+                            html += "<td>"+data.data[i].courseName+"</td>";
+                            html += "<td>"+data.data[i].stuName+"</td>";
+                            html += "<td>"+data.data[i].examTime+"</td>";
+                            html += "<td>"+data.data[i].examPlace+"</td>";
+                            html += "</tr>";
+                        }
+                        $("#tableList").append(html);
+                    }else {
+                        // 没有数据提示
+                        $("#info").show();
+                    }
+                } else {
+                    alert(data.message);
+                    $("#info").html(data.message);
+                    $("#info").show();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("服务器异常");
+                $("#info").html("服务器异常");
+                $("#info").show();
+            }
+        });
+    }
+
+    function getExamYearOptionsList() {
+        $.ajax({
+            type: "GET",
+            contentType: "application/x-www-form-urlencoded",
+            url: BASE_URL + "/jw/getExamYearOptionsList",
+            dataType: "json",
+            //改同步方式，先获取到年份列表才去获取成绩
+            async: false,
+            success: function (data) {
+                if (data.code == 200) {
+                    for (var i = 0;i<data.data.length;i++){
+                        $("#year").append("<option value=" + data.data[i] + ">" + data.data[i] + "</option>");
+                    }
+                } else {
+                    alert(data.message);
+                    window.location.href = BASE_URL + "/exam.html"
+                    return false;
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("服务器异常");
+                window.location.href = BASE_URL + "/exam.html"
+                return false;
+            }
+        })
+    }
+
+
+</script>
+</html>

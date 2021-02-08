@@ -1,0 +1,65 @@
+spring:
+  profiles:
+    active: prod
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #    schema: classpath:db/schema-h2.sql
+    #    data: classpath:db/data-h2.sql
+    url: jdbc:mysql://xxxx:3306/weixin_mp?characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: xxxx
+    druid:
+      initial-size: 5 #连接池初始化大小
+      min-idle: 10 #最小空闲连接数
+      max-active: 20 #最大连接数
+      web-stat-filter:
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*" #不统计这些请求数据
+      stat-view-servlet: #访问监控网页的登录用户名和密码
+        login-username: druid
+        login-password: druid
+  # Redis
+  redis:
+    database: 0
+    host: xxxx
+    #    host: 127.0.0.1
+    port: 6379
+    password: xxxx
+    timeout: 60000ms #毫秒
+    #springboot2.x 默认使用lettuce作为redis客户端工具
+    lettuce:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制） 默认 8
+        max-active: 200
+        # 连接池中的最大空闲连接 默认 8
+        max-idle: 100
+        # 连接池最大阻塞等待时间（使用负值表示没有限制） 默认 -1
+        max-wait: 60s
+        # 连接池中的最小空闲连接 默认 0
+        min-idle: 50
+  mail:
+    host: smtp.163.com
+    port: 465
+    username: starix610@163.com
+    password: xxxx
+    protocol: smtp
+    properties:
+      mail.smtp.ssl.enable: true
+
+
+
+server:
+  # 这个用作https端口
+  port: 9800
+  #这个字段属于自定义的，用于http端口
+  custom:
+    httpPort: 9801
+  ssl:
+    key-store: classpath:4803746_www.starix.top.pfx
+    key-store-password: xxxx
+    key-store-type: PKCS12
+
+
+gdou:
+#  jw-url: http://210.38.137.77:8016
+#  webvpn-url: https://webvpn.gdou.edu.cn
+  jw-url: https://jw.gdou.edu.cn
